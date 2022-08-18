@@ -1,7 +1,6 @@
 import type { NextPage } from 'next'
-import Head from 'next/head'
 
-import { Box, Link, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 
 import { BasePageLayout } from '../components/layouts';
 
