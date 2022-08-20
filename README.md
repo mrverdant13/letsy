@@ -2,13 +2,19 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, run the development server:
+1. Setup your environment variables:
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+   Duplicate the `.env.sample` file, name it `.env.local` and edit its content to match your environment.
+
+2. Run the development server:
+
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
+
+   **Note:** Every time the `.env.local` file is updated, the development server must be restarted.
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
