@@ -6,7 +6,17 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
    Duplicate the `.env.sample` file, name it `.env.local` and edit its content to match your environment.
 
-2. Run the development server:
+2. Start the database:
+
+   ```bash
+   $ docker-compose up -d
+   ```
+
+   With this you can access the database from the host machine.
+
+   Local database URL: `mongodb://localhost:27017/letsydb`
+
+3. Run the development server:
 
    ```bash
    npm run dev
