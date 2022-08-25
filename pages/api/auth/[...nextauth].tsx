@@ -13,5 +13,8 @@ export default NextAuth({
       clientSecret: config.githubOauthApp.clientSecret,
     }),
   ],
+  pages: {
+    signIn: '/auth/sign-in',
+  },
 })
 
