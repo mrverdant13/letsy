@@ -3,7 +3,7 @@ import { getProviders, signIn } from "next-auth/react"
 import { Button, Typography } from '@mui/material';
 import { FC } from 'react';
 import { BasePageLayout } from "../../components/layouts";
-import { GitHub } from "@mui/icons-material";
+import { GitHub, Google } from "@mui/icons-material";
 
 type ClientSafeProviders = Awaited<ReturnType<typeof getProviders>>;
 
@@ -49,6 +49,8 @@ const SignInPageContent: FC<Props> = ({ providers }) => {
           switch (provider.id) {
             case 'github':
               return <GitHub />;
+            case 'google':
+              return <Google />;
             default:
               return null;
           }
@@ -59,6 +61,9 @@ const SignInPageContent: FC<Props> = ({ providers }) => {
               variant="contained"
               onClick={() => signIn(provider.id)}
               endIcon={icon}
+              sx={{
+                my: 1,
+              }}
             >
               Sign in with {provider.name}
             </Button>
