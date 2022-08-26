@@ -1,17 +1,18 @@
-import { NextPage } from "next";
-import { getProviders, signIn } from "next-auth/react"
+import { GetServerSideProps, GetServerSidePropsContext, NextPage } from "next";
+import { getProviders, getSession, signIn } from "next-auth/react"
 import { Button, Typography } from '@mui/material';
 import { FC } from 'react';
 import { BasePageLayout } from "../../components/layouts";
 import { GitHub, Google } from "@mui/icons-material";
+import { Session } from "next-auth";
 
 type ClientSafeProviders = Awaited<ReturnType<typeof getProviders>>;
 
-interface Props {
+interface PageProps {
   providers: ClientSafeProviders;
 }
 
-const SignInPage: NextPage<Props> = ({ providers }) => {
+const SignInPage: NextPage<PageProps> = ({ providers }) => {
   return (
     <BasePageLayout
       title="Sign In"
@@ -24,8 +25,9 @@ const SignInPage: NextPage<Props> = ({ providers }) => {
     </BasePageLayout>
   );
 }
+export default SignInPage;
 
-const SignInPageContent: FC<Props> = ({ providers }) => {
+const SignInPageContent: FC<PageProps> = ({ providers }) => {
   if (!providers) {
     return (
       <Typography variant="h4" textAlign="center">
@@ -74,10 +76,16 @@ const SignInPageContent: FC<Props> = ({ providers }) => {
   )
 }
 
-
-export default SignInPage;
-
-export async function getServerSideProps() {
+export const getServerSideProps: GetServerSideProps<PageProps> = async (context: GetServerSidePropsContext) => {
+  const session = await getSession(context);
+  if (session) {
+    return {
+      redirect: {
+        destination: '/auth/profile',
+        permanent: false,
+      },
+    };
+  }
   const providers = await getProviders()
   return {
     props: { providers },
