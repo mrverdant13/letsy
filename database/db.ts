@@ -1,18 +1,20 @@
 import type { MongoClient } from 'mongodb';
-import mongoose from 'mongoose';
+import mongoose, { Connection } from 'mongoose';
 
 import config from '../config';
 
 let isConnected: boolean;
 
 export const connect = async (): Promise<MongoClient> => {
-  const activeConnection: mongoose.Connection | undefined = mongoose.connections.find(
+  const connections: Connection[] = mongoose.connections;
+  const activeConnections: Connection[] = connections.filter(
     // `readyState` has a value of `1` when the connection is open.
     (c) => (c.readyState === 1),
   );
-  if (activeConnection) {
+  console.log(`Connections: ${connections.length}`);
+  if (activeConnections.length > 0) {
     console.log('Already connected to database');
-    return activeConnection.getClient() as MongoClient;
+    return activeConnections[0].getClient() as MongoClient;
   }
   const connectionString: string = config.db.connectionString;
   await mongoose.disconnect();
