@@ -2,7 +2,8 @@ import { FC } from "react"
 
 import Head from "next/head";
 
-import { Box, Link, SxProps, Theme } from "@mui/material";
+import { Box, Link, Stack, SxProps, Theme } from "@mui/material";
+import { LetsyAppBar } from "../ui/LetsyAppBar";
 
 interface Props {
   title?: string;
@@ -13,7 +14,7 @@ interface Props {
 }
 
 const baseSx: SxProps<Theme> = {
-  height: "100vh",
+  height: "100%",
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
@@ -39,14 +40,22 @@ export const BasePageLayout: FC<Props> = ({
         <meta property="og:description" content={description} />
         <meta name="keywords" content={keywords.join(', ')} />
       </Head>
-      <Box
+      <Stack
+        direction="column"
         sx={{
-          ...baseSx,
-          ...sx,
+          height: '100vh',
         }}
       >
-        {children}
-      </Box>
+        <LetsyAppBar />
+        <Box
+          sx={{
+            ...baseSx,
+            ...sx,
+          }}
+        >
+          {children}
+        </Box>
+      </Stack>
       <Box
         component="footer"
         sx={{
