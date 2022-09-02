@@ -9,6 +9,7 @@ interface Props {
   title?: string;
   description?: string;
   keywords?: string[];
+  displayFooter?: boolean;
   sx?: SxProps<Theme>;
   children: React.ReactNode;
 }
@@ -28,6 +29,7 @@ export const BasePageLayout: FC<Props> = ({
     'investment',
     'analysis',
   ],
+  displayFooter = true,
   sx = {},
   children,
 }) => {
@@ -56,24 +58,27 @@ export const BasePageLayout: FC<Props> = ({
           {children}
         </Box>
       </Stack>
-      <Box
-        component="footer"
-        sx={{
-          display: 'flex',
-          padding: 2,
-          borderTop: '1px solid #eaeaea',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <Link
-          href="https://github.com/mrverdant13/"
-          target="_blank"
-          rel="noopener noreferrer"
-          underline="hover"
-        >
-          Created by @mrverdant13
-        </Link>
-      </Box>
+      {
+        displayFooter &&
+        <Box
+          component="footer"
+          sx={{
+            display: 'flex',
+            padding: 2,
+            borderTop: '1px solid #eaeaea',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Link
+            href="https://github.com/mrverdant13/"
+            target="_blank"
+            rel="noopener noreferrer"
+            underline="hover"
+          >
+            Created by @mrverdant13
+          </Link>
+        </Box>
+      }
     </Box>
   )
 }
