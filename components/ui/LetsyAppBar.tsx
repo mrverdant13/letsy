@@ -2,6 +2,7 @@ import { AppBar, Container, Stack, Toolbar } from "@mui/material"
 
 import { HomeButton } from "./HomeButton"
 import { ProfileButton } from "./ProfileButton"
+import { ToolsButton } from './ToolsButton';
 
 export const LetsyAppBar = () => {
   return (
@@ -17,7 +18,13 @@ export const LetsyAppBar = () => {
             }}
           >
             <HomeButton />
-            <ProfileButton />
+            <Stack
+              direction="row"
+              alignItems="center"
+            >
+              <ToolsButton />
+              <ProfileButton />
+            </Stack>
           </Stack>
         </Toolbar>
       </Container>
