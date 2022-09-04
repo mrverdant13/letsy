@@ -7,6 +7,7 @@ type CtxProps =
   EquivalentValueState &
   {
     updatePayment: (name: string, payment: IPayment) => void;
+    setInterest: (interest: number) => void;
   }
 
 export const EquivalentValueContext = createContext<CtxProps>({} as CtxProps);
