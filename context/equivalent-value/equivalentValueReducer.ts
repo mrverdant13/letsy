@@ -9,8 +9,14 @@ type UpdatePaymentAction = {
   payment: IPayment;
 };
 
+type SetInterestAction = {
+  type: '[EquivalentValue] Set Interest',
+  interest: number;
+};
+
 export type EquivalentValueAction =
   | UpdatePaymentAction
+  | SetInterestAction
   ;
 
 export type EquivalentValueError =
@@ -39,6 +45,16 @@ export const reducer: Reducer<EquivalentValueState, EquivalentValueAction> = (st
               ? updatedPayment
               : p,
         ),
+      };
+      return {
+        ...state,
+        group: resultingGroup,
+      };
+    }
+    case '[EquivalentValue] Set Interest': {
+      const resultingGroup: IPaymentGroup = {
+        ...state.group,
+        interest: action.interest,
       };
       return {
         ...state,

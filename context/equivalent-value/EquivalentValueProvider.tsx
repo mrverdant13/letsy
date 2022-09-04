@@ -30,10 +30,18 @@ export const EquivalentValueProvider: FC<Props> = ({ children }) => {
     });;
   };
 
+  const setInterest = (interest: number) => {
+    dispatch({
+      type: "[EquivalentValue] Set Interest",
+      interest,
+    });
+  }
+
   return (
     <EquivalentValueContext.Provider value={{
       ...state,
       updatePayment,
+      setInterest,
     }}>
       {children}
     </EquivalentValueContext.Provider>
