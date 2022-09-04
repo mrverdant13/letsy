@@ -1,7 +1,7 @@
 import { NextPage } from 'next';
 import React, { FC, useState, useMemo } from 'react';
 
-import { Typography, Stack, Chip, Box } from '@mui/material';
+import { Stack, Box } from '@mui/material';
 
 import { BasePageLayout } from '../../../components/layouts/BasePageLayout';
 import { EquivalentValueProvider } from '../../../context/equivalent-value/EquivalentValueProvider';
@@ -10,6 +10,7 @@ import { UniformSeriesPayment } from '../../../components/ui/UniformSeriesPaymen
 import { IPaymentType } from '../../../interfaces/payment-type';
 import { SinglePayment } from '../../../components/ui/SinglePayment';
 import { PeriodsBar } from '../../../components/ui/PeriodsBar';
+import { EquivalenceToolbar } from '../../../components/ui/EquivalenceToolbar';
 
 const EquivalentValuePage: NextPage = () => {
   return (
@@ -44,108 +45,114 @@ export const EquivalentValuePageContent: FC = () => {
     })),
     [group.payments],
   );
-
   return (
-    <Box
+    <Stack
       sx={{
-        position: 'relative',
-        overflowX: 'auto',
         width: '100%',
         height: '100%',
-        px: 3,
       }}
     >
-      <Stack
-        direction="row"
+      <EquivalenceToolbar />
+      <Box
         sx={{
-          position: 'absolute',
-          height: '100%',
+          flex: 1,
+          position: 'relative',
           overflowX: 'auto',
+          px: 3,
         }}
       >
-        {
-          Array.from(
-            { length: maxPosition + 10 },
-            (x, i) => (
-              <Box
-                key={i}
-                sx={{
-                  width: blockWidth,
-                  borderLeft: '.2px solid white',
-                  opacity: .25,
-                }}
-              >
-              </Box>
-            ),
-          )
-        }
-      </Stack>
-      <Stack
-        sx={{
-          position: 'absolute',
-          height: '100%',
-        }}
-      >
-        <PeriodsBar
-          positionsCount={maxPosition + 10}
-          blockWidth={blockWidth}
-        />
-        <Box
+        <Stack
+          direction="row"
           sx={{
-            position: 'relative',
-            flex: 1,
-            overflowY: 'auto',
-            py: 2,
+            position: 'absolute',
+            height: '100%',
+            overflowX: 'auto',
           }}
         >
-          <Stack
-            spacing={2}
+          {
+            Array.from(
+              { length: maxPosition + 10 },
+              (x, i) => (
+                <Box
+                  key={i}
+                  sx={{
+                    width: blockWidth,
+                    borderLeft: '.2px solid white',
+                    opacity: .25,
+                  }}
+                >
+                </Box>
+              ),
+            )
+          }
+        </Stack>
+        <Stack
+          sx={{
+            position: 'absolute',
+            height: '100%',
+          }}
+        >
+          <PeriodsBar
+            positionsCount={maxPosition + 10}
+            blockWidth={blockWidth}
+          />
+          <Box
             sx={{
-              position: 'absolute',
+              position: 'relative',
+              flex: 1,
+              overflowY: 'auto',
+              py: 2,
             }}
           >
-            {
-              group.payments.map<JSX.Element>((p, i) => {
-                return (
-                  <Box
-                    key={p.name}
-                    sx={{
-                      height: blockHeight,
-                    }}
-                  >
-                    {
-                      (() => {
-                        switch (p.type) {
-                          case IPaymentType.single: {
-                            return <SinglePayment
-                              key={p.name}
-                              payment={p}
-                              blockWidth={blockWidth}
-                              blockHeight={blockHeight}
-                            />;
+            <Stack
+              spacing={2}
+              sx={{
+                position: 'absolute',
+              }}
+            >
+              {
+                group.payments.map<JSX.Element>((p, i) => {
+                  return (
+                    <Box
+                      key={p.name}
+                      sx={{
+                        height: blockHeight,
+                      }}
+                    >
+                      {
+                        (() => {
+                          switch (p.type) {
+                            case IPaymentType.single: {
+                              return <SinglePayment
+                                key={p.name}
+                                payment={p}
+                                blockWidth={blockWidth}
+                                blockHeight={blockHeight}
+                              />;
+                            }
+                            case IPaymentType.uniformSeries: {
+                              return <UniformSeriesPayment
+                                key={p.name}
+                                payment={p}
+                                blockWidth={blockWidth}
+                                blockHeight={blockHeight}
+                              />;
+                            }
                           }
-                          case IPaymentType.uniformSeries: {
-                            return <UniformSeriesPayment
-                              key={p.name}
-                              payment={p}
-                              blockWidth={blockWidth}
-                              blockHeight={blockHeight}
-                            />;
-                          }
-                        }
-                      })()
-                    }
-                  </Box>
-                )
-              })
-            }
-          </Stack>
-        </Box>
-        <PeriodsBar
-          positionsCount={maxPosition + 10}
-          blockWidth={blockWidth}
-        />
-      </Stack>
-    </Box>
+                        })()
+                      }
+                    </Box>
+                  )
+                })
+              }
+            </Stack>
+          </Box>
+          <PeriodsBar
+            positionsCount={maxPosition + 10}
+            blockWidth={blockWidth}
+          />
+        </Stack>
+      </Box>
+    </Stack >
   );
 }
