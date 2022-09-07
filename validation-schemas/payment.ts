@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import { IPaymentType } from '../interfaces/payment-type';
 import { PaymentTypeValidationSchema } from './payment-type';
+import { PositionValidationSchema } from './positions';
 
 const BasePaymentValidationSchema = z.object({
   name: z
@@ -9,23 +10,14 @@ const BasePaymentValidationSchema = z.object({
       required_error: 'Name is required',
       invalid_type_error: 'Invalid name'
     })
+    .trim()
     .min(
       1,
       {
         message: 'Name is required',
       },
     ),
-  position: z
-    .number({
-      required_error: 'Position is required',
-      invalid_type_error: 'Position must be a number'
-    })
-    .int(
-      'Position must be a non-negative integer',
-    )
-    .nonnegative(
-      'Position must be a non-negative integer',
-    ),
+  position: PositionValidationSchema('Position'),
   type: PaymentTypeValidationSchema,
 });
 
