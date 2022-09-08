@@ -21,7 +21,7 @@ export const PaymentGroupValidationSchema = z.object({
     .refine(
       (payments) => {
         const names = payments.map(p => p.name);
-        const uniqueNames = new Set(...names);
+        const uniqueNames = new Set([...names]);
         return uniqueNames.size === names.length;
       },
     ),
