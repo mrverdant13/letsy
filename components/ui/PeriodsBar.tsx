@@ -1,6 +1,8 @@
 import { FC } from 'react';
 
-import { Stack, Box, Chip } from '@mui/material';
+import { Stack, Box, Chip, Tooltip } from '@mui/material';
+
+import { useEquivalentValueContext } from '../../context/equivalent-value/EquivalentValueContext';
 
 interface Props {
   positionsCount: number;
@@ -11,6 +13,7 @@ export const PeriodsBar: FC<Props> = ({
   positionsCount,
   blockWidth,
 }) => {
+  const { computeEquivalentValue } = useEquivalentValueContext();
   return (
     <Stack
       direction="row"
@@ -32,13 +35,16 @@ export const PeriodsBar: FC<Props> = ({
                 my: 1,
               }}
             >
-              <Chip
-                label={i}
-                size="small"
-                sx={{
-                  m: 'auto',
-                }}
-              />
+              <Tooltip title="Compute equivalent value for this period">
+                <Chip
+                  label={i}
+                  size="small"
+                  sx={{
+                    m: 'auto',
+                  }}
+                  onClick={() => { computeEquivalentValue(i) }}
+                />
+              </Tooltip>
             </Box>
           ),
         )

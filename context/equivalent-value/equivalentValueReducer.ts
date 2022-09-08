@@ -48,13 +48,24 @@ export const reducer: Reducer<EquivalentValueState, EquivalentValueAction> = (st
       return {
         ...state,
         computing: true,
+        computeEquivalentValueError: undefined,
+        equivalentPayment: undefined,
       };
     }
     case '[EquivalentValue] Computed Equivalent Payment': {
       return {
         ...state,
         computing: false,
+        computeEquivalentValueError: undefined,
         equivalentPayment: action.equivalentPayment,
+      };
+    }
+    case '[EquivalentValue] Set Compute Equivalent Payment Error': {
+      return {
+        ...state,
+        computing: false,
+        computeEquivalentValueError: action.error,
+        equivalentPayment: undefined,
       };
     }
   }

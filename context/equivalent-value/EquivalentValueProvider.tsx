@@ -47,18 +47,25 @@ export const EquivalentValueProvider: FC<Props> = ({ children }) => {
     dispatch({
       type: "[EquivalentValue] Computing Equivalent Payment",
     });
-    const response = await httpClient.post<ISinglePayment>(
-      '/equivalent-value',
-      {
-        group: state.group,
-        targetPosition: targetPeriod,
-      },
-    );
-    const equivalentPayment: ISinglePayment = response.data;
-    dispatch({
-      type: "[EquivalentValue] Computed Equivalent Payment",
-      equivalentPayment,
-    });
+    try {
+      const response = await httpClient.post<ISinglePayment>(
+        '/equivalent-value',
+        {
+          group: state.group,
+          targetPosition: targetPeriod,
+        },
+      );
+      const equivalentPayment: ISinglePayment = response.data;
+      dispatch({
+        type: "[EquivalentValue] Computed Equivalent Payment",
+        equivalentPayment,
+      });
+    } catch (e) {
+      dispatch({
+        type: "[EquivalentValue] Set Compute Equivalent Payment Error",
+        error: { code: 'unexpected' },
+      });
+    }
   }
 
   return (
