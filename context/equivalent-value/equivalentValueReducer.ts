@@ -1,33 +1,15 @@
 import { Reducer } from "react";
 
-import { IPaymentGroup } from "../../interfaces/payment-group";
-import { IPayment } from '../../interfaces/payment';
-
-type UpdatePaymentAction = {
-  type: '[EquivalentValue] Update Payment',
-  name: string;
-  payment: IPayment;
-};
-
-type SetInterestAction = {
-  type: '[EquivalentValue] Set Interest',
-  interest: number;
-};
-
-export type EquivalentValueAction =
-  | UpdatePaymentAction
-  | SetInterestAction
-  ;
-
-export type EquivalentValueError =
-  | 'unexpected'
-  ;
+import { IPaymentGroup, IPaymentGroupWithOptionalInterest } from '../../interfaces/payment-group';
+import { IPayment, ISinglePayment } from '../../interfaces/payment';
+import { EquivalentValueAction } from "./actions";
+import { ComputeEquivalentValueError } from "./errors";
 
 export interface EquivalentValueState {
-  loading: boolean;
-  errorCode?: EquivalentValueError;
-  group: IPaymentGroup;
-  amount?: number;
+  computing: boolean;
+  computeEquivalentValueError?: ComputeEquivalentValueError;
+  group: IPaymentGroupWithOptionalInterest;
+  equivalentPayment?: ISinglePayment;
 }
 
 export const reducer: Reducer<EquivalentValueState, EquivalentValueAction> = (state, action) => {
@@ -37,7 +19,7 @@ export const reducer: Reducer<EquivalentValueState, EquivalentValueAction> = (st
       const updatedPayment = action.payment;
       const currentGroup = state.group;
       const currentPayments = currentGroup.payments;
-      const resultingGroup: IPaymentGroup = {
+      const resultingGroup: IPaymentGroupWithOptionalInterest = {
         ...currentGroup,
         payments: currentPayments.map(
           p =>
@@ -58,7 +40,32 @@ export const reducer: Reducer<EquivalentValueState, EquivalentValueAction> = (st
       };
       return {
         ...state,
+        setInterestError: undefined,
         group: resultingGroup,
+      };
+    }
+    case '[EquivalentValue] Computing Equivalent Payment': {
+      return {
+        ...state,
+        computing: true,
+        computeEquivalentValueError: undefined,
+        equivalentPayment: undefined,
+      };
+    }
+    case '[EquivalentValue] Computed Equivalent Payment': {
+      return {
+        ...state,
+        computing: false,
+        computeEquivalentValueError: undefined,
+        equivalentPayment: action.equivalentPayment,
+      };
+    }
+    case '[EquivalentValue] Set Compute Equivalent Payment Error': {
+      return {
+        ...state,
+        computing: false,
+        computeEquivalentValueError: action.error,
+        equivalentPayment: undefined,
       };
     }
   }

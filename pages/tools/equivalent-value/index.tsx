@@ -45,6 +45,14 @@ export const EquivalentValuePageContent: FC = () => {
     })),
     [group.payments],
   );
+
+  const periodsBar = (
+    <PeriodsBar
+      positionsCount={maxPosition + 10}
+      blockWidth={blockWidth}
+    />
+  );
+
   return (
     <Stack
       sx={{
@@ -92,10 +100,7 @@ export const EquivalentValuePageContent: FC = () => {
             height: '100%',
           }}
         >
-          <PeriodsBar
-            positionsCount={maxPosition + 10}
-            blockWidth={blockWidth}
-          />
+          {periodsBar}
           <Box
             sx={{
               position: 'relative',
@@ -147,10 +152,7 @@ export const EquivalentValuePageContent: FC = () => {
               }
             </Stack>
           </Box>
-          <PeriodsBar
-            positionsCount={maxPosition + 10}
-            blockWidth={blockWidth}
-          />
+          {periodsBar}
         </Stack>
       </Box>
     </Stack >

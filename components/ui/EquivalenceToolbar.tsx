@@ -8,7 +8,7 @@ import useDebounce from '../../hooks/useDebounce';
 
 
 export const EquivalenceToolbar = () => {
-  const { group: { interest }, setInterest } = useEquivalentValueContext();
+  const { computing, computeEquivalentValueError, group: { interest }, equivalentPayment, setInterest } = useEquivalentValueContext();
   const [dynamicInterest, setDynamicInterest] = useState(interest);
   const [value, setValue] = useState<string>('');
   const [isInvalidInterest, setIsInvalidInterest] = useState<boolean>(false);
@@ -79,7 +79,27 @@ export const EquivalenceToolbar = () => {
           />
         </Stack>
         <Divider orientation="vertical" flexItem />
-        <Stack
+        {
+          computing &&
+          <Typography>
+            Loading...
+          </Typography>
+        }
+        {
+          computeEquivalentValueError &&
+          <Typography>
+            {computeEquivalentValueError.code}
+          </Typography>
+        }
+        {
+          !computing &&
+          !computeEquivalentValueError &&
+          equivalentPayment &&
+          <Typography>
+            Amount: {equivalentPayment.amount} - Period: {equivalentPayment.position}
+          </Typography>
+        }
+        {/* <Stack
           direction="row"
           alignItems="center"
           spacing={0.5}
@@ -102,7 +122,7 @@ export const EquivalenceToolbar = () => {
                 </>
             )
           }
-        </Stack>
+        </Stack> */}
       </Stack>
     </Paper >
   )
