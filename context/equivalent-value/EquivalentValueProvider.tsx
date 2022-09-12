@@ -3,7 +3,6 @@ import { FC, Reducer, useReducer } from "react";
 import { EquivalentValueState, reducer } from './equivalentValueReducer';
 import { EquivalentValueContext } from './EquivalentValueContext';
 import { IPayment, ISinglePayment } from '../../interfaces/payment';
-import { IPaymentType } from "../../interfaces/payment-type";
 import httpClient from '../../apis/_client';
 import { EquivalentValueAction } from "./actions";
 
@@ -51,7 +50,10 @@ export const EquivalentValueProvider: FC<Props> = ({ children }) => {
       const response = await httpClient.post<ISinglePayment>(
         '/equivalent-value',
         {
-          group: state.group,
+          group: {
+            ...state.group,
+            interest: state.group.interest! / 100,
+          },
           targetPosition: targetPeriod,
         },
       );
