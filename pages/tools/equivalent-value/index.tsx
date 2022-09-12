@@ -1,7 +1,7 @@
 import { NextPage } from 'next';
 import React, { FC, useState, useMemo } from 'react';
 
-import { Stack, Box, Typography, Container } from '@mui/material';
+import { Stack, Box, Typography } from '@mui/material';
 
 import { BasePageLayout } from '../../../components/layouts/BasePageLayout';
 import { EquivalentValueProvider } from '../../../context/equivalent-value/EquivalentValueProvider';
@@ -11,6 +11,7 @@ import { IPaymentType } from '../../../interfaces/payment-type';
 import { SinglePayment } from '../../../components/ui/SinglePayment';
 import { PeriodsBar } from '../../../components/ui/PeriodsBar';
 import { EquivalenceToolbar } from '../../../components/ui/EquivalenceToolbar';
+import { AddPaymentButton } from '../../../components/ui/AddPaymentButton';
 
 const EquivalentValuePage: NextPage = () => {
   return (
@@ -21,9 +22,27 @@ const EquivalentValuePage: NextPage = () => {
         displayFooter={false}
         sx={{
           display: undefined,
+          position: 'relative',
         }}
       >
-        <EquivalentValuePageContent />
+        <Box
+          sx={{
+            width: '100%',
+            height: '100%',
+            position: 'absolute',
+          }}
+        >
+          <EquivalentValuePageContent />
+        </Box>
+        <Box
+          sx={{
+            position: 'absolute',
+            bottom: 15,
+            right: 15,
+          }}
+        >
+          <AddPaymentButton />
+        </Box>
       </BasePageLayout>
     </EquivalentValueProvider>
   );
