@@ -1,7 +1,7 @@
 import { NextPage } from 'next';
 import React, { FC, useState, useMemo } from 'react';
 
-import { Stack, Box } from '@mui/material';
+import { Stack, Box, Typography, Container } from '@mui/material';
 
 import { BasePageLayout } from '../../../components/layouts/BasePageLayout';
 import { EquivalentValueProvider } from '../../../context/equivalent-value/EquivalentValueProvider';
@@ -45,6 +45,31 @@ export const EquivalentValuePageContent: FC = () => {
     })),
     [group.payments],
   );
+
+  if (group.payments.length === 0) {
+    return (
+      <Box
+        sx={{
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+        }}
+      >
+        <Typography
+          textAlign="center"
+          sx={{
+            m: 'auto',
+            typography: {
+              xs: 'h5',
+              sm: 'h4',
+            },
+          }}
+        >
+          No payments
+        </Typography>
+      </Box>
+    );
+  }
 
   const periodsBar = (
     <PeriodsBar
