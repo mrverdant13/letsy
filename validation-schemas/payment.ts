@@ -29,7 +29,10 @@ export const SinglePaymentValidationSchema = BasePaymentValidationSchema.merge(
       .number({
         required_error: 'Amount is required',
         invalid_type_error: 'Amount must be a number',
-      }),
+      })
+      .positive(
+        'The amount must be a positive number',
+      ),
   }),
 );
 
@@ -41,7 +44,10 @@ export const UniformSeriesPaymentValidationSchema = BasePaymentValidationSchema.
       .number({
         required_error: 'Periodic amount is required',
         invalid_type_error: 'Periodic amount must be a number',
-      }),
+      })
+      .positive(
+        'The periodic amount must be positive number',
+      ),
     periods: z
       .number({
         required_error: 'Periods is required',
