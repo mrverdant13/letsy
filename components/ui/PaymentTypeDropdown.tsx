@@ -1,33 +1,34 @@
 import { FC, useMemo } from 'react';
 
-import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import { FormControl, FormHelperText, InputLabel, MenuItem, Select } from '@mui/material';
+import { useField, useFormikContext } from 'formik';
 
 import { IPaymentType } from '../../interfaces/payment-type';
 
-interface Props {
-  value: (IPaymentType | null);
-  onSelection?: (type: (IPaymentType | null)) => void;
+const labelId: string = 'payment-type-dropdown-label';
+
+interface PaymentTypeDropdownProps {
+  id: string;
+  name: string;
+  label: string;
 }
 
-const labelId: string = 'payment-type-dropdown-label';
-const label: string = 'Payment type';
-
-export const PaymentTypeDropdown: FC<Props> = ({
-  value,
-  onSelection,
-}) => {
-  const valueString = useMemo(
-    () => value ?? '',
-    [value],
+export const PaymentTypeDropdown: FC<PaymentTypeDropdownProps> = (props) => {
+  const resultingProps = { ...props, type: 'text' };
+  const label = resultingProps.label;
+  const [field, meta, helpers] = useField(resultingProps);
+  const { isSubmitting } = useFormikContext();
+  const resultingField = { ...field, value: field.value ?? '' };
+  const showError = useMemo(
+    () => Boolean(meta.touched && meta.error),
+    [meta.touched, meta.error],
   );
-  const onChange = (event: SelectChangeEvent) => {
-    const maybeType = IPaymentType.parse(event.target.value);
-    if (onSelection) onSelection(maybeType);
-  };
   return (
     <FormControl
       required
       fullWidth
+      error={showError}
+      disabled={isSubmitting}
     >
       <InputLabel
         id={labelId}
@@ -35,10 +36,8 @@ export const PaymentTypeDropdown: FC<Props> = ({
         {label}
       </InputLabel>
       <Select
-        id="payment-type"
-        value={valueString}
-        onChange={onChange}
-        labelId={labelId}
+        {...resultingField}
+        {...resultingProps}
         label={label}
       >
         {
@@ -54,6 +53,12 @@ export const PaymentTypeDropdown: FC<Props> = ({
           )
         }
       </Select>
+      {
+        showError &&
+        <FormHelperText>
+          {meta.error}
+        </FormHelperText>
+      }
     </FormControl>
   )
 }
