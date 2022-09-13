@@ -1,6 +1,10 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, useMediaQuery, useTheme } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, useMediaQuery, useTheme, Box, Stack } from '@mui/material';
+
+import { PaymentTypeDropdown } from './PaymentTypeDropdown';
+import { IPaymentType } from '../../interfaces/payment-type';
+import { PaymentAttributes } from './PaymentAttributes';
 
 interface Props {
   isOpen: boolean;
@@ -15,6 +19,7 @@ export const NewPaymentDialog: FC<Props> = ({
 }) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const [type, setType] = useState<IPaymentType | null>(null);
   return (
     <Dialog
       open={isOpen}
@@ -22,24 +27,41 @@ export const NewPaymentDialog: FC<Props> = ({
       fullScreen={fullScreen}
       aria-labelledby={titleId}
     >
-      <DialogTitle
-        id={titleId}
+      <Box
+        sx={{
+          minWidth: 400,
+        }}
       >
-        Add new payment
-      </DialogTitle>
-      <DialogContent>
-        <DialogContentText>
-          Enter the payment details
-        </DialogContentText>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={close}>
-          Cancel
-        </Button>
-        <Button onClick={close}>
-          Add
-        </Button>
-      </DialogActions>
+        <DialogTitle
+          id={titleId}
+        >
+          Add new payment
+        </DialogTitle>
+        <DialogContent>
+          <Stack
+            spacing={3}
+            padding={1}
+          >
+            <PaymentTypeDropdown
+              value={type}
+              onSelection={(maybeType) => setType(maybeType)}
+            />
+            {
+              type &&
+              <PaymentAttributes type={type} />
+            }
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={close}>
+            Cancel
+          </Button>
+          <Button onClick={close}>
+            Add
+          </Button>
+        </DialogActions>
+      </Box>
     </Dialog >
   )
 }
+
