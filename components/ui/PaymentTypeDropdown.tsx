@@ -26,6 +26,7 @@ export const PaymentTypeDropdown: FC<Props> = ({
   };
   return (
     <FormControl
+      required
       fullWidth
     >
       <InputLabel
