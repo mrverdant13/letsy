@@ -9,6 +9,7 @@ import { IPaymentType } from '../../interfaces/payment-type';
 import { PaymentAttributes } from './PaymentAttributes';
 import { PaymentValidationSchema } from '../../validation-schemas/payment';
 import { useEquivalentValueContext } from '../../context/equivalent-value/EquivalentValueContext';
+import { IPayment } from '../../interfaces/payment';
 import { SpecificPaymentGroupPaymentsValidationSchema } from '../../validation-schemas/payment-group';
 
 interface Props {
@@ -64,7 +65,8 @@ export const NewPaymentDialog: FC<Props> = ({
       }
       onSubmit={
         (values, { setSubmitting }) => {
-          console.log(values);
+          addPayment(values as IPayment);
+          setSubmitting(false);
         }
       }
     >
