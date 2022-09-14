@@ -64,9 +64,12 @@ export const NewPaymentDialog: FC<Props> = ({
         }
       }
       onSubmit={
-        (values, { setSubmitting }) => {
-          addPayment(values as IPayment);
+        (values, { setSubmitting, resetForm }) => {
+          const payment = PaymentValidationSchema.parse(values);
+          addPayment(payment);
           setSubmitting(false);
+          resetForm();
+          close();
         }
       }
     >
