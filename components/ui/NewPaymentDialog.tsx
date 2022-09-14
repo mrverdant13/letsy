@@ -8,6 +8,8 @@ import { PaymentTypeDropdown } from './PaymentTypeDropdown';
 import { IPaymentType } from '../../interfaces/payment-type';
 import { PaymentAttributes } from './PaymentAttributes';
 import { PaymentValidationSchema } from '../../validation-schemas/payment';
+import { useEquivalentValueContext } from '../../context/equivalent-value/EquivalentValueContext';
+import { SpecificPaymentGroupPaymentsValidationSchema } from '../../validation-schemas/payment-group';
 
 interface Props {
   isOpen: boolean;
@@ -22,11 +24,12 @@ export const NewPaymentDialog: FC<Props> = ({
 }) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const { addPayment, group } = useEquivalentValueContext();
   return (
     <Formik
       initialValues={{
         name: '',
-        type: undefined,
+        type: '',
         position: 0,
 
         // Simple payment
@@ -40,15 +43,22 @@ export const NewPaymentDialog: FC<Props> = ({
       validate={
         (values) => {
           const errors: { [key: string]: (string | undefined) } = {};
-          const result = PaymentValidationSchema.safeParse(values);
-          if (result.success) return errors;
-          const issues = result.error.issues;
-          issues.forEach((issue) => {
-            const field = issue.path.length > 0 ? issue.path[0] : undefined;
-            if (field) {
-              errors[field] = field === 'type' ? 'Invalid value' : issue.message;
+          const paymentValidationResult = PaymentValidationSchema.safeParse(values);
+          if (!paymentValidationResult.success) {
+            const issues = paymentValidationResult.error.issues;
+            issues.forEach((issue) => {
+              const field = issue.path.length > 0 ? issue.path[0] : undefined;
+              if (field) {
+                errors[field] = field === 'type' ? 'Invalid value' : issue.message;
+              }
+            });
+          } else {
+            const payments = [...group.payments, values];
+            const paymentsValidationResult = SpecificPaymentGroupPaymentsValidationSchema.safeParse(payments);
+            if (!paymentsValidationResult.success) {
+              errors.name = paymentsValidationResult.error.issues[0].message;
             }
-          });
+          }
           return errors;
         }
       }
@@ -106,7 +116,10 @@ export const NewPaymentDialog: FC<Props> = ({
                   <Button onClick={close}>
                     Cancel
                   </Button>
-                  <Button onClick={() => submitForm()}>
+                  <Button onClick={() => {
+                    if (isSubmitting) return;
+                    submitForm();
+                  }}>
                     Add
                   </Button>
                 </DialogActions>
