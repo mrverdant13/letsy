@@ -64,8 +64,8 @@ const UniformSeriesPaymentAttributes: FC = () => {
       <Field
         required
         component={TextField}
-        id="periodic-amount"
-        name="periodic-amount"
+        id="periodicAmount"
+        name="periodicAmount"
         type="number"
         label="Periodic amount"
       />
