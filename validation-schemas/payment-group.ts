@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import mongoose from 'mongoose';
 
 import { PaymentValidationSchema } from './payment';
 import { InterestValidationSchema } from './interests';
@@ -19,10 +20,23 @@ const PaymentGroupPaymentsValidationSchemaBuilder = (isGeneric: boolean) => z
     },
   );
 
-const GenericPaymentGroupPaymentsValidationSchema = PaymentGroupPaymentsValidationSchemaBuilder(true);
+export const GenericPaymentGroupPaymentsValidationSchema = PaymentGroupPaymentsValidationSchemaBuilder(true);
 export const SpecificPaymentGroupPaymentsValidationSchema = PaymentGroupPaymentsValidationSchemaBuilder(false);
 
 export const PaymentGroupValidationSchema = z.object({
+  _id: z
+    .string({
+      required_error: 'ID is required',
+      invalid_type_error: 'Invalid ID',
+    })
+    .refine(
+      (id) => {
+        return mongoose.isValidObjectId(id);
+      },
+      {
+        message: 'Invalid ID',
+      },
+    ),
   name: z
     .string({
       required_error: 'Name is required',
@@ -38,6 +52,11 @@ export const PaymentGroupValidationSchema = z.object({
   payments: GenericPaymentGroupPaymentsValidationSchema,
   interest: InterestValidationSchema,
 });
+
+export const NewPaymentGroupValidationSchema = PaymentGroupValidationSchema
+  .partial({
+    _id: true,
+  });
 
 export const PaymentGroupWithOptionalInterestValidationSchema = PaymentGroupValidationSchema
   .partial({
