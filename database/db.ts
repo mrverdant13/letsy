@@ -1,35 +1,38 @@
 import type { MongoClient } from 'mongodb';
-import mongoose, { Connection } from 'mongoose';
+import mongoose from 'mongoose';
 
 import config from '../config';
 
-let isConnected: boolean;
-
-export const connect = async (): Promise<MongoClient> => {
-  const connections: Connection[] = mongoose.connections;
-  const activeConnections: Connection[] = connections.filter(
-    // `readyState` has a value of `1` when the connection is open.
-    (c) => (c.readyState === 1),
-  );
-  console.log(`Connections: ${connections.length}`);
-  if (activeConnections.length > 0) {
-    console.log('Already connected to database');
-    return activeConnections[0].getClient() as MongoClient;
+type GlobalType =
+  & typeof globalThis
+  & {
+    mongoose: {
+      connection?: typeof mongoose;
+      promise?: Promise<typeof mongoose>;
+    };
   }
-  const connectionString: string = config.db.connectionString;
-  await mongoose.disconnect();
-  const m: typeof mongoose = await mongoose.connect(connectionString);
-  const client: MongoClient = m.connection.getClient() as MongoClient;
-  isConnected = true;
-  console.log('Connected to database:', connectionString);
-  return client;
+  ;
+
+let appGlobal: GlobalType = global as GlobalType;
+
+let cached = appGlobal.mongoose;
+
+if (!cached) {
+  cached = appGlobal.mongoose = {
+    connection: undefined,
+    promise: undefined,
+  }
 }
 
-export const disconnect = async (): Promise<void> => {
-  if (!isConnected) {
-    console.log('Already disconnected from database');
-    return;
+export const connect = async (): Promise<MongoClient> => {
+  if (cached.connection) return cached.connection.connection.getClient() as MongoClient;
+  if (!cached.promise) {
+    const opts = {
+      bufferCommands: false,
+    }
+    const connectionString = config.db.connectionString;
+    cached.promise = mongoose.connect(connectionString, opts);
   }
-  await mongoose.disconnect();
-  console.log('Disconnected from database');
+  cached.connection = await cached.promise;
+  return cached.connection.connection.getClient() as MongoClient;
 }
