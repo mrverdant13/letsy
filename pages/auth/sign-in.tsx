@@ -1,10 +1,13 @@
 import { GetServerSideProps, GetServerSidePropsContext, NextPage } from "next";
-import { getProviders, getSession, signIn } from "next-auth/react"
-import { Button, Typography } from '@mui/material';
 import { FC } from 'react';
-import { BasePageLayout } from "../../components/layouts";
+
+import { getProviders, signIn } from "next-auth/react"
+import { Button, Typography } from '@mui/material';
+import { unstable_getServerSession } from 'next-auth';
 import { GitHub, Google } from "@mui/icons-material";
-import { Session } from "next-auth";
+
+import { BasePageLayout } from "../../components/layouts";
+import { authOptions } from '../api/auth/[...nextauth]';
 
 type ClientSafeProviders = Awaited<ReturnType<typeof getProviders>>;
 
@@ -77,7 +80,7 @@ const SignInPageContent: FC<PageProps> = ({ providers }) => {
 }
 
 export const getServerSideProps: GetServerSideProps<PageProps> = async (context: GetServerSidePropsContext) => {
-  const session = await getSession(context);
+  const session = await unstable_getServerSession(context.req, context.res, authOptions);
   if (session) {
     return {
       redirect: {

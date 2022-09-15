@@ -1,11 +1,14 @@
 import { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType, NextPage } from 'next';
-import { BasePageLayout } from '../../components/layouts/BasePageLayout';
-import { Avatar, Button, Typography } from '@mui/material';
-import { getSession, signOut } from 'next-auth/react';
 import { FC } from 'react';
-import { Session } from 'next-auth';
-import { IUser } from '../../interfaces/users';
 import Image from 'next/image';
+
+import { signOut } from 'next-auth/react';
+import { unstable_getServerSession } from 'next-auth';
+import { Avatar, Button, Typography } from '@mui/material';
+
+import { authOptions } from '../api/auth/[...nextauth]';
+import { BasePageLayout } from '../../components/layouts/BasePageLayout';
+import { IUser } from '../../interfaces/users';
 
 interface PageProps {
   user: IUser,
@@ -100,7 +103,7 @@ export const ProfilePageContent: FC<PageProps> = ({ user }) => {
 
 
 export const getServerSideProps: GetServerSideProps<PageProps> = async (context: GetServerSidePropsContext) => {
-  const session = await getSession(context);
+  const session = await unstable_getServerSession(context.req, context.res, authOptions);
   if (!session) {
     return {
       redirect: {
