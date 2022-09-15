@@ -20,6 +20,14 @@ export const authOptions: NextAuthOptions = {
       clientSecret: google.clientSecret,
     }),
   ],
+  callbacks: {
+    async session({ session, token, user }) {
+      if (session?.user && user.id) {
+        session.userId = user.id;
+      }
+      return session;
+    }
+  },
   pages: {
     signIn: '/auth/sign-in',
     signOut: '/auth/sign-out',
