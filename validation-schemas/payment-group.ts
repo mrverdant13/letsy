@@ -37,6 +37,19 @@ export const PaymentGroupValidationSchema = z.object({
         message: 'Invalid ID',
       },
     ),
+  owner: z
+    .string({
+      required_error: 'Owner ID is required',
+      invalid_type_error: 'Invalid owner ID',
+    })
+    .refine(
+      (id) => {
+        return mongoose.isValidObjectId(id);
+      },
+      {
+        message: 'Invalid owner ID',
+      },
+    ),
   name: z
     .string({
       required_error: 'Name is required',

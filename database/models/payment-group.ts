@@ -1,8 +1,10 @@
 import { prop, modelOptions, getModelForClass } from '@typegoose/typegoose';
-import { IPayment } from '../../interfaces/payment';
+import type { Ref } from '@typegoose/typegoose';
 
+import { IPayment } from '../../interfaces/payment';
 import { Payment, paymentDiscriminators } from './payment';
 import { GenericPaymentGroupPaymentsValidationSchema } from '../../validation-schemas/payment-group';
+import { User } from './user';
 
 const uniquePaymentNamesValidator = {
   validator: (v: Payment[]) => {
@@ -18,6 +20,12 @@ const uniquePaymentNamesValidator = {
   },
 })
 export class PaymentGroup {
+  @prop({
+    required: true,
+    ref: () => User,
+  })
+  owner!: Ref<User>;
+
   @prop({
     required: true,
     minlength: 1,
