@@ -6,3 +6,9 @@ export type IPaymentGroup = z.infer<typeof PaymentGroupValidationSchema>;
 export type INewPaymentGroup = z.infer<typeof NewPaymentGroupValidationSchema>;
 
 export type IPaymentGroupWithOptionalInterest = z.infer<typeof PaymentGroupWithOptionalInterestValidationSchema>;
+
+export type IPaymentGroupsPage = {
+  groups: IPaymentGroup[];
+  count: number;
+};
+
