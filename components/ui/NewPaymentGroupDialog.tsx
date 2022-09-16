@@ -1,7 +1,7 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, useMediaQuery, useTheme, Box, Stack } from '@mui/material';
-import { Field, Form, Formik } from 'formik';
+import { Field, Form, Formik, useFormikContext } from 'formik';
 import { TextField } from 'formik-mui';
 
 import { PaymentGroupNameValidationSchema } from '../../validation-schemas/payment-group';
@@ -43,16 +43,13 @@ export const NewPaymentGroupDialog: FC<Props> = ({
           }
         }
         onSubmit={
-          (values, { setSubmitting, resetForm }) => {
+          (values) => {
             const name = PaymentGroupNameValidationSchema.parse(values.name);
             createGroup(name);
-            setSubmitting(false);
-            resetForm();
-            close();
           }
         }
       >
-        {({ values: { name }, submitForm, isSubmitting }) => (
+        {({ isSubmitting }) => (
           <Form>
             <Box
               sx={{
@@ -80,15 +77,13 @@ export const NewPaymentGroupDialog: FC<Props> = ({
                 </Stack>
               </DialogContent>
               <DialogActions>
-                <Button onClick={close}>
+                <Button
+                  disabled={isSubmitting}
+                  onClick={close}
+                >
                   Cancel
                 </Button>
-                <Button onClick={() => {
-                  if (isSubmitting) return;
-                  submitForm();
-                }}>
-                  Create
-                </Button>
+                <SubmitButton />
               </DialogActions>
             </Box>
           </Form>
@@ -98,3 +93,25 @@ export const NewPaymentGroupDialog: FC<Props> = ({
   )
 }
 
+const SubmitButton = () => {
+  const { creating, groupId, error, createGroup } = useEquivalentValueGroupsContext();
+  const { submitForm, isSubmitting, setSubmitting, resetForm } = useFormikContext();
+  useEffect(
+    () => {
+      setSubmitting(creating);
+    },
+    [creating],
+  );
+  const submit = () => {
+    if (isSubmitting) return;
+    submitForm();
+  };
+  return (
+    <Button
+      disabled={isSubmitting}
+      onClick={submit}>
+      Create
+    </Button>
+
+  );
+}
