@@ -1,9 +1,9 @@
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 
 import { unstable_getServerSession } from 'next-auth';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, Stack, Pagination, PaginationItem } from '@mui/material';
 
 import { BasePageLayout } from '../../../components/layouts/BasePageLayout';
 import { authOptions } from '../../api/auth/[...nextauth]';
@@ -34,15 +34,21 @@ export default EquivalentValueGroupsPage;
 const EquivalentValueGroupsPageContent = () => {
   const router = useRouter();
   const query = router.query;
-  const offset: number = parseInt(`${query.offset}`);
-  const limit: number = parseInt(`${query.limit}`);
+  const { offset, limit } = useMemo(
+    () => {
+      const unsafeOffset = parseInt(`${query.offset}`);
+      const unsafeLimit = parseInt(`${query.limit}`);
+      return {
+        offset: isNaN(unsafeOffset) ? 0 : unsafeOffset,
+        limit: isNaN(unsafeLimit) ? 50 : unsafeLimit,
+      };
+    },
+    [query],
+  );
   const { loading, groupsPage, error, getGroups } = useEquivalenceGroupsContext();
   useEffect(
     () => {
-      getGroups({
-        offset: isNaN(offset) ? undefined : offset,
-        limit: isNaN(limit) ? undefined : limit,
-      });
+      getGroups({ offset, limit });
     },
     [offset, limit],
   );
@@ -56,9 +62,32 @@ const EquivalentValueGroupsPageContent = () => {
       <Typography sx={{ mx: 5, my: 2 }} variant="h5">
         Groups
       </Typography>
-      {/* <Divider /> */}
       {groupsPage &&
-        <EquivalenceGroupsList groups={groupsPage.groups} />
+        (() => {
+          const currentPage = Math.ceil((offset + 1) / limit);
+          const maxPage = Math.ceil(groupsPage.count / limit);
+          const pagination = (
+            <Pagination
+              page={currentPage}
+              count={maxPage}
+              onChange={(e, value) => {
+                const newOffset = (value - 1) * limit;
+                router.push(`equivalent-value?offset=${newOffset}&limit=${limit}`);
+              }}
+            />
+          );
+          return (
+            <Stack
+              spacing={2}
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              {pagination}
+              <EquivalenceGroupsList groups={groupsPage.groups} />
+              {pagination}
+            </Stack>
+          );
+        })()
       }
       {loading &&
         <Box sx={{ p: { xs: 'auto', sm: 2 } }}>
