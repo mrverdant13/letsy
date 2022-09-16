@@ -5,6 +5,7 @@ import { EquivalentValueGroupsState } from './state';
 type CtxProps =
   & EquivalentValueGroupsState
   & {
+    reset: () => Promise<void>;
     createGroup: (name: string) => Promise<void>;
   }
   ;

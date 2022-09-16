@@ -94,7 +94,7 @@ export const NewPaymentGroupDialog: FC<Props> = ({
 }
 
 const SubmitButton = () => {
-  const { creating, groupId, error, createGroup } = useEquivalentValueGroupsContext();
+  const { creating, groupId, error, reset, createGroup } = useEquivalentValueGroupsContext();
   const { submitForm, isSubmitting, setSubmitting, resetForm } = useFormikContext();
   useEffect(
     () => {
@@ -106,6 +106,7 @@ const SubmitButton = () => {
     () => {
       if (groupId) {
         resetForm();
+        reset();
       }
     },
     [groupId],

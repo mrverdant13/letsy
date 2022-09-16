@@ -1,5 +1,9 @@
 import { CreatePaymentGroupError } from './errors';
 
+type ResetAction = {
+  type: '[EquivalentValueGroups] Reset';
+};
+
 type CreatingAction = {
   type: '[EquivalentValueGroups] Creating';
 };
@@ -15,6 +19,7 @@ type FailedCreationAction = {
 }
 
 export type EquivalentValueGroupsAction =
+  | ResetAction
   | CreatingAction
   | CreatedAction
   | FailedCreationAction

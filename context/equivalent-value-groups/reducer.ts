@@ -1,10 +1,15 @@
 import { Reducer } from 'react';
 
-import { EquivalentValueGroupsState } from './state';
+import { EquivalentValueGroupsState, INITIAL_STATE } from './state';
 import { EquivalentValueGroupsAction } from './actions';
 
 export const reducer: Reducer<EquivalentValueGroupsState, EquivalentValueGroupsAction> = (state, action) => {
   switch (action.type) {
+    case '[EquivalentValueGroups] Reset': {
+      return {
+        ...INITIAL_STATE,
+      };
+    }
     case '[EquivalentValueGroups] Creating': {
       return {
         groupId: undefined,

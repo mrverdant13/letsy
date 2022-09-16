@@ -17,6 +17,12 @@ export const EquivalentValueGroupsProvider: FC<Props> = ({ children }) => {
     INITIAL_STATE,
   );
 
+  const reset = async (): Promise<void> => {
+    dispatch({
+      type: '[EquivalentValueGroups] Reset',
+    });
+  };
+
   const createGroup = async (
     name: string,
   ): Promise<void> => {
@@ -50,6 +56,7 @@ export const EquivalentValueGroupsProvider: FC<Props> = ({ children }) => {
     <EquivalentValueGroupsContext.Provider
       value={{
         ...state,
+        reset,
         createGroup,
       }}
     >
