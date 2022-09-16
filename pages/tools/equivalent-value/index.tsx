@@ -7,17 +7,20 @@ import { BasePageLayout } from '../../../components/layouts/BasePageLayout';
 import { authOptions } from '../../api/auth/[...nextauth]';
 import { AddPaymentGroupButton } from '../../../components/ui/AddPaymentGroupButton';
 import { EquivalentValueGroupsProvider } from '../../../context/equivalent-value-groups/EquivalentValueGroupsProvider';
+import { EquivalenceGroupsProvider } from '../../../context/equivalence-groups/EquivalenceGroupsProvider';
 
 const EquivalentValueGroupsPage: NextPage = () => {
   return (
-    <EquivalentValueGroupsProvider>
-      <BasePageLayout
-        title="Equivalent Value Calculation - Groups"
-        description="Payment groups"
-      >
-        <AddPaymentGroupButton />
-      </BasePageLayout>
-    </EquivalentValueGroupsProvider>
+    <EquivalenceGroupsProvider>
+      <EquivalentValueGroupsProvider>
+        <BasePageLayout
+          title="Equivalent Value Calculation - Groups"
+          description="Payment groups"
+        >
+          <AddPaymentGroupButton />
+        </BasePageLayout>
+      </EquivalentValueGroupsProvider>
+    </EquivalenceGroupsProvider>
   );
 }
 export default EquivalentValueGroupsPage;
