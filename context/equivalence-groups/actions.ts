@@ -1,4 +1,4 @@
-import { IPaymentGroup } from '../../interfaces/payment-group';
+import { IPaymentGroupsPage } from '../../interfaces/payment-group';
 import { LoadGroupsError } from './errors';
 
 type LoadingGroupsAction = {
@@ -7,7 +7,7 @@ type LoadingGroupsAction = {
 
 type LoadedGroupsAction = {
   type: '[EquivalenceGroups] Loaded';
-  groups: IPaymentGroup[];
+  groupsPage: IPaymentGroupsPage;
 };
 
 type FailedLoadGroupsAction = {

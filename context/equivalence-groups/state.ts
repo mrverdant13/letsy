@@ -1,9 +1,9 @@
-import { IPaymentGroup } from '../../interfaces/payment-group';
+import { IPaymentGroup, IPaymentGroupsPage } from '../../interfaces/payment-group';
 import { LoadGroupsError } from './errors';
 
 export interface EquivalenceGroupsState {
   loading: boolean;
-  groups?: IPaymentGroup[];
+  groupsPage?: IPaymentGroupsPage;
   error?: LoadGroupsError;
 }
 

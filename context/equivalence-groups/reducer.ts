@@ -15,14 +15,14 @@ export const reducer: Reducer<EquivalenceGroupsState, EquivalenceGroupsAction> =
     case '[EquivalenceGroups] Loaded': {
       return {
         loading: false,
-        groups: action.groups,
+        groupsPage: action.groupsPage,
         error: undefined,
       };
     }
     case '[EquivalenceGroups] Failed Load': {
       return {
         loading: false,
-        groups: undefined,
+        groupsPage: undefined,
         error: action.error,
       };
     }
