@@ -102,6 +102,14 @@ const SubmitButton = () => {
     },
     [creating],
   );
+  useEffect(
+    () => {
+      if (groupId) {
+        resetForm();
+      }
+    },
+    [groupId],
+  );
   const submit = () => {
     if (isSubmitting) return;
     submitForm();
