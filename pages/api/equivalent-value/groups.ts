@@ -41,7 +41,10 @@ const createGroup = async (req: NextApiRequest, res: NextApiResponse<CreateEquiv
       issues: result.error.issues,
     });
   }
-  const paymentGroup: INewPaymentGroup = result.data;
+  const paymentGroup = {
+    ...result.data,
+    owner: session.userId as string,
+  };
   await db.connect();
   const newPaymentGroup = await PaymentGroupModel.create(paymentGroup);
   return res.status(201).json(newPaymentGroup.toJSON());
