@@ -23,6 +23,19 @@ const PaymentGroupPaymentsValidationSchemaBuilder = (isGeneric: boolean) => z
 export const GenericPaymentGroupPaymentsValidationSchema = PaymentGroupPaymentsValidationSchemaBuilder(true);
 export const SpecificPaymentGroupPaymentsValidationSchema = PaymentGroupPaymentsValidationSchemaBuilder(false);
 
+export const PaymentGroupNameValidationSchema = z
+  .string({
+    required_error: 'Name is required',
+    invalid_type_error: 'Invalid name',
+  })
+  .trim()
+  .min(
+    1,
+    {
+      message: 'Name is required',
+    },
+  );
+
 export const PaymentGroupValidationSchema = z.object({
   _id: z
     .string({
@@ -50,18 +63,7 @@ export const PaymentGroupValidationSchema = z.object({
         message: 'Invalid owner ID',
       },
     ),
-  name: z
-    .string({
-      required_error: 'Name is required',
-      invalid_type_error: 'Invalid name',
-    })
-    .trim()
-    .min(
-      1,
-      {
-        message: 'Name is required',
-      },
-    ),
+  name: PaymentGroupNameValidationSchema,
   payments: GenericPaymentGroupPaymentsValidationSchema,
   interest: InterestValidationSchema,
 });
