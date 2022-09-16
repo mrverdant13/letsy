@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 
 import { PaymentValidationSchema } from './payment';
 import { InterestValidationSchema } from './interests';
+import { ObjectIdStringValidationSchema } from './object-id';
 
 const PaymentGroupPaymentsValidationSchemaBuilder = (isGeneric: boolean) => z
   .array(PaymentValidationSchema)
@@ -37,32 +38,8 @@ export const PaymentGroupNameValidationSchema = z
   );
 
 export const PaymentGroupValidationSchema = z.object({
-  _id: z
-    .string({
-      required_error: 'ID is required',
-      invalid_type_error: 'Invalid ID',
-    })
-    .refine(
-      (id) => {
-        return mongoose.isValidObjectId(id);
-      },
-      {
-        message: 'Invalid ID',
-      },
-    ),
-  owner: z
-    .string({
-      required_error: 'Owner ID is required',
-      invalid_type_error: 'Invalid owner ID',
-    })
-    .refine(
-      (id) => {
-        return mongoose.isValidObjectId(id);
-      },
-      {
-        message: 'Invalid owner ID',
-      },
-    ),
+  _id: ObjectIdStringValidationSchema(),
+  owner: ObjectIdStringValidationSchema('owner ID'),
   name: PaymentGroupNameValidationSchema,
   payments: GenericPaymentGroupPaymentsValidationSchema,
   interest: InterestValidationSchema,
