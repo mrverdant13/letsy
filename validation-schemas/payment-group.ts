@@ -67,8 +67,9 @@ export const PaymentGroupValidationSchema = z.object({
 });
 
 export const NewPaymentGroupValidationSchema = PaymentGroupValidationSchema
-  .partial({
+  .omit({
     _id: true,
+    owner: true,
   });
 
 export const PaymentGroupWithOptionalInterestValidationSchema = PaymentGroupValidationSchema
