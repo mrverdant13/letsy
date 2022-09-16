@@ -1,4 +1,5 @@
 import { FC, useEffect } from 'react';
+import { useRouter } from 'next/router';
 
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, useMediaQuery, useTheme, Box, Stack } from '@mui/material';
 import { Field, Form, Formik, useFormikContext } from 'formik';
@@ -94,6 +95,7 @@ export const NewPaymentGroupDialog: FC<Props> = ({
 }
 
 const SubmitButton = () => {
+  const router = useRouter();
   const { creating, groupId, error, reset, createGroup } = useEquivalentValueGroupsContext();
   const { submitForm, isSubmitting, setSubmitting, resetForm } = useFormikContext();
   useEffect(
@@ -107,6 +109,7 @@ const SubmitButton = () => {
       if (groupId) {
         resetForm();
         reset();
+        router.push(`equivalent-value/${groupId}`);
       }
     },
     [groupId],
