@@ -6,6 +6,7 @@ import { EquivalenceGroupAction } from './actions';
 import { EquivalenceGroupState } from './state';
 import { reducer } from './reducer';
 import { IPayment } from '../../interfaces/payment';
+import httpClient from '../../apis/_client';
 
 interface Props {
   children: ReactNode;
@@ -26,16 +27,18 @@ export const EquivalenceGroupProvider: FC<Props> = ({ children, initialGroup }) 
       type: '[EquivalenceGroup] Adding Payment',
     });
     const currentGroup = state.group;
-    const group = {
-      ...currentGroup,
-      payments: [
-        ...currentGroup.payments,
-        payment,
-      ],
-    };
+    const response = await httpClient.patch<IPaymentGroup>(
+      `/equivalent-value/groups/${currentGroup._id}`,
+      {
+        payments: [
+          ...currentGroup.payments,
+          payment,
+        ],
+      },
+    );
     dispatch({
       type: '[EquivalenceGroup] Added Payment',
-      group,
+      group: response.data,
     });
   }
 
