@@ -8,9 +8,8 @@ import { PaymentTypeDropdown } from './PaymentTypeDropdown';
 import { IPaymentType } from '../../interfaces/payment-type';
 import { PaymentAttributes } from './PaymentAttributes';
 import { PaymentValidationSchema } from '../../validation-schemas/payment';
-import { useEquivalentValueContext } from '../../context/equivalent-value/EquivalentValueContext';
-import { IPayment } from '../../interfaces/payment';
 import { SpecificPaymentGroupPaymentsValidationSchema } from '../../validation-schemas/payment-group';
+import { useEquivalenceGroupContext } from '../../context/equivalence-group/context';
 
 interface Props {
   isOpen: boolean;
@@ -25,7 +24,7 @@ export const NewPaymentDialog: FC<Props> = ({
 }) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  const { addPayment, group } = useEquivalentValueContext();
+  const { group, addPayment } = useEquivalenceGroupContext();
   return (
     <Formik
       initialValues={{
