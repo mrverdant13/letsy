@@ -119,13 +119,29 @@ const EquivalentValueGroupsPageContent = () => {
               justifyContent="space-between"
             >
               {pagination}
-              <EquivalenceGroupsList groups={groupsPage.groups} />
-              {pagination}
+              {
+                loading
+                  ? (
+                    <Box sx={{ p: { xs: 'auto', sm: 2 } }}>
+                      <Typography variant="h5" textAlign="center">
+                        Loading
+                      </Typography>
+                    </Box>
+                  )
+                  : (
+                    <>
+                      <EquivalenceGroupsList groups={groupsPage.groups} />
+                      {pagination}
+                    </>
+                  )
+              }
             </Stack>
           );
         })()
       }
-      {loading &&
+      {
+        loading &&
+        !groupsPage &&
         <Box sx={{ p: { xs: 'auto', sm: 2 } }}>
           <Typography variant="h5" textAlign="center">
             Loading
