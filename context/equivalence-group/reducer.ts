@@ -4,16 +4,16 @@ import { EquivalenceGroupAction } from './actions';
 
 export const reducer: Reducer<EquivalenceGroupState, EquivalenceGroupAction> = (state, action) => {
   switch (action.type) {
-    case '[EquivalenceGroup] Adding Payment': {
+    case '[EquivalenceGroup] Loading': {
       return {
         ...state,
-        addingPayment: true,
+        loading: true,
       };
     }
-    case '[EquivalenceGroup] Added Payment': {
+    case '[EquivalenceGroup] Loaded': {
       return {
         ...state,
-        addingPayment: false,
+        loading: false,
         group: action.group,
       };
     }

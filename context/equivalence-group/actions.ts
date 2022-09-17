@@ -1,15 +1,15 @@
 import { IPaymentGroup } from '../../interfaces/payment-group';
 
-type AddingPaymentAction = {
-  type: '[EquivalenceGroup] Adding Payment';
+type LoadingAction = {
+  type: '[EquivalenceGroup] Loading';
 };
 
-type AddedPaymentAction = {
-  type: '[EquivalenceGroup] Added Payment';
+type LoadedAction = {
+  type: '[EquivalenceGroup] Loaded';
   group: IPaymentGroup;
 };
 
 export type EquivalenceGroupAction =
-  | AddingPaymentAction
-  | AddedPaymentAction
+  | LoadingAction
+  | LoadedAction
   ;

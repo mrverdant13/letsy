@@ -18,13 +18,13 @@ export const EquivalenceGroupProvider: FC<Props> = ({ children, initialGroup }) 
     reducer,
     {
       group: initialGroup,
-      addingPayment: false,
+      loading: false,
     },
   );
 
   const addPayment = async (payment: IPayment) => {
     dispatch({
-      type: '[EquivalenceGroup] Adding Payment',
+      type: '[EquivalenceGroup] Loading',
     });
     const currentGroup = state.group;
     const response = await httpClient.patch<IPaymentGroup>(
@@ -37,7 +37,7 @@ export const EquivalenceGroupProvider: FC<Props> = ({ children, initialGroup }) 
       },
     );
     dispatch({
-      type: '[EquivalenceGroup] Added Payment',
+      type: '[EquivalenceGroup] Loaded',
       group: response.data,
     });
   }
