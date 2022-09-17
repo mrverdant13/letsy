@@ -28,7 +28,9 @@ const EquivalentValuePage: NextPage<Props> = ({ group: initialGroup }) => {
     <EquivalenceGroupProvider
       initialGroup={initialGroup}
     >
-      <EquivalentValueProvider>
+      <EquivalentValueProvider
+        initialGroup={initialGroup}
+      >
         <BasePageLayout
           title="Equivalent Value Calculator"
           description="Calculate the equivalent value of a set of payments in a given time."
