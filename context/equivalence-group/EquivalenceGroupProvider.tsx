@@ -19,6 +19,7 @@ export const EquivalenceGroupProvider: FC<Props> = ({ children, initialGroup }) 
     {
       group: initialGroup,
       loading: false,
+      errors: [],
     },
   );
 

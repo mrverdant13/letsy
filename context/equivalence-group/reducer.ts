@@ -17,5 +17,14 @@ export const reducer: Reducer<EquivalenceGroupState, EquivalenceGroupAction> = (
         group: action.group,
       };
     }
+    case '[EquivalenceGroup] Add Errors': {
+      return {
+        ...state,
+        errors: [
+          ...state.errors,
+          ...action.errors,
+        ],
+      };
+    }
   }
 }
