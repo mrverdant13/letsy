@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useMemo } from 'react';
 
 import { unstable_getServerSession } from 'next-auth';
-import { Box, Typography, Stack, Pagination, PaginationItem } from '@mui/material';
+import { Box, Typography, Stack, Pagination, Button } from '@mui/material';
 
 import { BasePageLayout } from '../../../components/layouts/BasePageLayout';
 import { authOptions } from '../../api/auth/[...nextauth]';
@@ -12,6 +12,7 @@ import { EquivalentValueGroupsProvider } from '../../../context/equivalent-value
 import { EquivalenceGroupsProvider } from '../../../context/equivalence-groups/EquivalenceGroupsProvider';
 import { useEquivalenceGroupsContext } from '../../../context/equivalence-groups/context';
 import { EquivalenceGroupsList } from '../../../components/ui/EquivalenceGroupsList';
+import httpClient from '../../../apis/_client';
 
 const EquivalentValueGroupsPage: NextPage = () => {
   return (
@@ -59,9 +60,43 @@ const EquivalentValueGroupsPageContent = () => {
         height: '100%',
       }}
     >
-      <Typography sx={{ mx: 5, my: 2 }} variant="h5">
-        Groups
-      </Typography>
+      <Stack
+        direction="row"
+        alignItems="center"
+        spacing={2}
+        sx={{ mx: 5, my: 2 }}
+      >
+        <Typography
+          sx={{
+            typography: {
+              xs: 'h5',
+              sm: 'h4',
+            }
+          }}
+        >
+          Groups
+        </Typography>
+        {
+          (process.env.NODE_ENV !== 'production') &&
+          <Button
+            size="small"
+            sx={{
+              px: 3,
+            }}
+            onClick={async () => {
+              await httpClient.post(
+                'equivalent-value/groups/seed',
+                {
+                  count: 200,
+                },
+              );
+              router.reload();
+            }}
+          >
+            Seed groups
+          </Button>
+        }
+      </Stack>
       {groupsPage &&
         (() => {
           const currentPage = Math.ceil((offset + 1) / limit);
