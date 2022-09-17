@@ -14,20 +14,6 @@ export interface EquivalentValueState {
 
 export const reducer: Reducer<EquivalentValueState, EquivalentValueAction> = (state, action) => {
   switch (action.type) {
-    case '[EquivalentValue] Add Payment': {
-      const newPayment = action.payment;
-      const group = { ...state.group };
-      return {
-        ...state,
-        group: {
-          ...group,
-          payments: [
-            ...group.payments,
-            newPayment,
-          ],
-        },
-      };
-    }
     case '[EquivalentValue] Update Payment': {
       const paymentName = action.name;
       const updatedPayment = action.payment;

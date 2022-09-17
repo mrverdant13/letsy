@@ -21,13 +21,6 @@ export const EquivalentValueProvider: FC<Props> = ({ children, initialGroup }) =
     },
   );
 
-  const addPayment = (payment: IPayment) => {
-    dispatch({
-      type: '[EquivalentValue] Add Payment',
-      payment,
-    });
-  }
-
   const updatePayment = (name: string, payment: IPayment) => {
     dispatch({
       type: "[EquivalentValue] Update Payment",
@@ -76,7 +69,6 @@ export const EquivalentValueProvider: FC<Props> = ({ children, initialGroup }) =
   return (
     <EquivalentValueContext.Provider value={{
       ...state,
-      addPayment,
       updatePayment,
       setInterest,
       computeEquivalentValue,

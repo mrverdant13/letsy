@@ -1,11 +1,6 @@
 import { IPayment, ISinglePayment } from "../../interfaces/payment";
 import { ComputeEquivalentValueError } from './errors';
 
-type AddPaymentAction = {
-  type: '[EquivalentValue] Add Payment';
-  payment: IPayment;
-}
-
 type UpdatePaymentAction = {
   type: '[EquivalentValue] Update Payment',
   name: string;
@@ -32,7 +27,6 @@ type SetComputeEquivalentPaymentErrorAction = {
 };
 
 export type EquivalentValueAction =
-  | AddPaymentAction
   | UpdatePaymentAction
   | SetInterestAction
   | ComputingEquivalentPaymentAction
