@@ -7,8 +7,8 @@ export const reducer: Reducer<EquivalenceGroupsState, EquivalenceGroupsAction> =
   switch (action.type) {
     case '[EquivalenceGroups] Loading': {
       return {
-        ...state,
         loading: true,
+        groupsPage: undefined,
         error: undefined,
       };
     }
