@@ -1,7 +1,7 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, useMediaQuery, useTheme, Box, Stack } from '@mui/material';
-import { Field, Form, Formik } from 'formik';
+import { Field, Form, Formik, useFormikContext } from 'formik';
 import { TextField } from 'formik-mui';
 
 import { PaymentTypeDropdown } from './PaymentTypeDropdown';
@@ -10,6 +10,7 @@ import { PaymentAttributes } from './PaymentAttributes';
 import { PaymentValidationSchema } from '../../validation-schemas/payment';
 import { SpecificPaymentGroupPaymentsValidationSchema } from '../../validation-schemas/payment-group';
 import { useEquivalenceGroupContext } from '../../context/equivalence-group/context';
+import usePrevious from '../../hooks/usePrevious';
 
 interface Props {
   isOpen: boolean;
@@ -63,12 +64,9 @@ export const NewPaymentDialog: FC<Props> = ({
         }
       }
       onSubmit={
-        (values, { setSubmitting, resetForm }) => {
+        (values) => {
           const payment = PaymentValidationSchema.parse(values);
           addPayment(payment);
-          setSubmitting(false);
-          resetForm();
-          close();
         }
       }
     >
@@ -117,15 +115,16 @@ export const NewPaymentDialog: FC<Props> = ({
                   </Stack>
                 </DialogContent>
                 <DialogActions>
-                  <Button onClick={close}>
+                  <Button
+                    disabled={isSubmitting}
+                    onClick={close}
+                  >
                     Cancel
                   </Button>
-                  <Button onClick={() => {
-                    if (isSubmitting) return;
-                    submitForm();
-                  }}>
-                    Add
-                  </Button>
+                  <SubmitButton
+                    isOpen={isOpen}
+                    close={close}
+                  />
                 </DialogActions>
               </Box>
             </Dialog>
@@ -136,3 +135,37 @@ export const NewPaymentDialog: FC<Props> = ({
   )
 }
 
+const SubmitButton: FC<Props> = ({ close }) => {
+  const { addingPayment, group: { payments } } = useEquivalenceGroupContext();
+  const { submitForm, isSubmitting, setSubmitting, resetForm } = useFormikContext();
+  const currentPaymentsCount = payments.length;
+  const previousPaymentsCount = usePrevious(currentPaymentsCount);
+  useEffect(
+    () => {
+      setSubmitting(addingPayment);
+    },
+    [addingPayment],
+  );
+  useEffect(
+    () => {
+      if (previousPaymentsCount == null) return;
+      if (previousPaymentsCount == currentPaymentsCount) return;
+      resetForm();
+      close();
+    },
+    [currentPaymentsCount, previousPaymentsCount],
+  );
+  const submit = () => {
+    if (isSubmitting) return;
+    submitForm();
+  };
+  return (
+    <Button
+      disabled={isSubmitting}
+      onClick={submit}>
+      Create
+    </Button>
+
+  );
+
+}
