@@ -50,3 +50,5 @@ export const NewPaymentGroupValidationSchema = PaymentGroupValidationSchema
     _id: true,
     owner: true,
   });
+
+export const UpdatedPaymentGroupValidationSchema = NewPaymentGroupValidationSchema.partial();
