@@ -7,6 +7,7 @@ type CtxProps =
   & EquivalenceGroupState
   & {
     addPayment: (payment: IPayment) => Promise<void>;
+    updateInterest: (interest: number) => Promise<void>;
   }
   ;
 
