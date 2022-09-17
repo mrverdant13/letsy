@@ -5,10 +5,12 @@ import { CheckCircleOutline } from '@mui/icons-material';
 
 import { useEquivalentValueContext } from '../../context/equivalent-value/EquivalentValueContext';
 import useDebounce from '../../hooks/useDebounce';
+import { useEquivalenceGroupContext } from '../../context/equivalence-group/context';
 
 
 export const EquivalenceToolbar = () => {
-  const { computing, computeEquivalentValueError, group: { interest }, equivalentPayment, setInterest } = useEquivalentValueContext();
+  const { group: { interest } } = useEquivalenceGroupContext();
+  const { computing, computeEquivalentValueError, equivalentPayment, setInterest } = useEquivalentValueContext();
   const [dynamicInterest, setDynamicInterest] = useState(interest);
   const [value, setValue] = useState<string>('');
   const [isInvalidInterest, setIsInvalidInterest] = useState<boolean>(false);

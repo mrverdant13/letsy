@@ -18,6 +18,7 @@ import { EquivalenceGroupProvider } from '../../../context/equivalence-group/Equ
 import { IPaymentGroup } from '../../../interfaces/payment-group';
 import { ObjectIdStringValidationSchema } from '../../../validation-schemas/object-id';
 import { PaymentGroupModel } from '../../../database/models/payment-group';
+import { useEquivalenceGroupContext } from '../../../context/equivalence-group/context';
 
 interface Props {
   group: IPaymentGroup;
@@ -98,7 +99,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context: Get
 }
 
 const EquivalentValuePageContent: FC = () => {
-  const { group: { payments } } = useEquivalentValueContext();
+  const { group: { payments } } = useEquivalenceGroupContext();
   return (
     <Stack
       sx={{
@@ -144,7 +145,7 @@ const NoPaymentsMessage: FC = () => {
 const EquivalentValueChart: FC = () => {
   const [blockWidth, setBlockWidth] = useState<number>(50);
   const [blockHeight, setBlockHeight] = useState<number>(50);
-  const { group } = useEquivalentValueContext();
+  const { group } = useEquivalenceGroupContext();
   const maxPosition = useMemo(
     () => Math.max(...group.payments.map<number>(p => {
       switch (p.type) {
