@@ -23,6 +23,7 @@ export const EquivalenceGroupProvider: FC<Props> = ({ children, initialGroup }) 
   );
 
   const addPayment = async (payment: IPayment) => {
+    if (state.loading) return;
     dispatch({
       type: '[EquivalenceGroup] Loading',
     });
@@ -43,6 +44,7 @@ export const EquivalenceGroupProvider: FC<Props> = ({ children, initialGroup }) 
   }
 
   const updateInterest = async (interest: number) => {
+    if (state.loading) return;
     dispatch({
       type: '[EquivalenceGroup] Loading',
     });
