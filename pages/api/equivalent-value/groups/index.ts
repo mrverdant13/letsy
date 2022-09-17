@@ -2,14 +2,14 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 
 import { unstable_getServerSession } from 'next-auth';
 
-import { MethodNotAllowedResponse } from '../../../interfaces/api/method-not-allowed-response';
-import { NewPaymentGroupValidationSchema } from '../../../validation-schemas/payment-group';
-import { IPaymentGroup, IPaymentGroupsPage } from '../../../interfaces/payment-group';
-import { BadRequestWithInvalidDataResponse } from '../../../interfaces/api/bad-request-response';
-import { authOptions } from '../auth/[...nextauth]';
-import { UnauthorizedResponse } from '../../../interfaces/api/unauthorized-response';
-import { db } from '../../../database';
-import { PaymentGroupModel } from '../../../database/models/payment-group';
+import { MethodNotAllowedResponse } from '../../../../interfaces/api/method-not-allowed-response';
+import { NewPaymentGroupValidationSchema } from '../../../../validation-schemas/payment-group';
+import { IPaymentGroup, IPaymentGroupsPage } from '../../../../interfaces/payment-group';
+import { BadRequestWithInvalidDataResponse } from '../../../../interfaces/api/bad-request-response';
+import { authOptions } from '../../auth/[...nextauth]';
+import { UnauthorizedResponse } from '../../../../interfaces/api/unauthorized-response';
+import { db } from '../../../../database';
+import { PaymentGroupModel } from '../../../../database/models/payment-group';
 
 type CreateEquivalentValueGroup =
   | UnauthorizedResponse
