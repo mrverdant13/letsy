@@ -14,44 +14,58 @@ import { PeriodsBar } from '../../../components/ui/PeriodsBar';
 import { EquivalenceToolbar } from '../../../components/ui/EquivalenceToolbar';
 import { AddPaymentButton } from '../../../components/ui/AddPaymentButton';
 import { authOptions } from '../../api/auth/[...nextauth]';
+import { EquivalenceGroupProvider } from '../../../context/equivalence-group/EquivalenceGroupProvider';
+import { IPaymentGroup } from '../../../interfaces/payment-group';
+import { ObjectIdStringValidationSchema } from '../../../validation-schemas/object-id';
+import { PaymentGroupModel } from '../../../database/models/payment-group';
 
-const EquivalentValuePage: NextPage = () => {
+interface Props {
+  group: IPaymentGroup;
+};
+
+const EquivalentValuePage: NextPage<Props> = ({ group: initialGroup }) => {
   return (
-    <EquivalentValueProvider>
-      <BasePageLayout
-        title="Equivalent Value Calculator"
-        description="Calculate the equivalent value of a set of payments in a given time."
-        displayFooter={false}
-        sx={{
-          display: undefined,
-          position: 'relative',
-        }}
+    <EquivalenceGroupProvider
+      initialGroup={initialGroup}
+    >
+      <EquivalentValueProvider
+        initialGroup={initialGroup}
       >
-        <Box
+        <BasePageLayout
+          title="Equivalent Value Calculator"
+          description="Calculate the equivalent value of a set of payments in a given time."
+          displayFooter={false}
           sx={{
-            width: '100%',
-            height: '100%',
-            position: 'absolute',
+            display: undefined,
+            position: 'relative',
           }}
         >
-          <EquivalentValuePageContent />
-        </Box>
-        <Box
-          sx={{
-            position: 'absolute',
-            bottom: 15,
-            right: 15,
-          }}
-        >
-          <AddPaymentButton />
-        </Box>
-      </BasePageLayout>
-    </EquivalentValueProvider>
+          <Box
+            sx={{
+              width: '100%',
+              height: '100%',
+              position: 'absolute',
+            }}
+          >
+            <EquivalentValuePageContent />
+          </Box>
+          <Box
+            sx={{
+              position: 'absolute',
+              bottom: 15,
+              right: 15,
+            }}
+          >
+            <AddPaymentButton />
+          </Box>
+        </BasePageLayout>
+      </EquivalentValueProvider>
+    </EquivalenceGroupProvider>
   );
 }
 export default EquivalentValuePage;
 
-export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps<Props> = async (context: GetServerSidePropsContext) => {
   const session = await unstable_getServerSession(context.req, context.res, authOptions);
   if (!session) {
     return {
@@ -61,9 +75,26 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
       },
     };
   }
-  return {
-    props: {},
-  };
+  const { groupId } = context.params as { groupId: string };
+  try {
+    const safeGroupId = ObjectIdStringValidationSchema().parse(groupId);
+    const group = await PaymentGroupModel.findById(safeGroupId);
+    if (group == null) throw new Error(`Not Found`);
+    if (group.owner?.toString() !== session.userId) throw new Error(`Forbidden`);
+    return {
+      props: {
+        group: JSON.parse(JSON.stringify(group)),
+      },
+    };
+  } catch (e) {
+    console.error(e);
+    return {
+      redirect: {
+        destination: '/tools/equivalent-value',
+        permanent: false,
+      },
+    };
+  }
 }
 
 const EquivalentValuePageContent: FC = () => {

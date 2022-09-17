@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { FC } from "react";
 
 import { Card, CardActionArea, CardContent, SxProps, Theme, Typography } from "@mui/material"
@@ -20,16 +21,21 @@ export const EquivalenceGroupCard: FC<Props> = ({ group, sx = {} }) => {
         ...sx,
       }}
     >
-      <CardActionArea>
-        <CardContent>
-          <Typography variant="h5" component="h2">
-            {name}
-          </Typography>
-          <Typography variant="body1" component="p">
-            Payments: {payments.length}
-          </Typography>
-        </CardContent>
-      </CardActionArea>
+      <Link
+        href={`equivalent-value/${group._id}`}
+        passHref
+      >
+        <CardActionArea>
+          <CardContent>
+            <Typography variant="h5" component="h2">
+              {name}
+            </Typography>
+            <Typography variant="body1" component="p">
+              Payments: {payments.length}
+            </Typography>
+          </CardContent>
+        </CardActionArea>
+      </Link>
     </Card>
   )
 }

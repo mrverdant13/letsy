@@ -1,14 +1,14 @@
 import { Reducer } from "react";
 
-import { IPaymentGroup, IPaymentGroupWithOptionalInterest } from '../../interfaces/payment-group';
-import { IPayment, ISinglePayment } from '../../interfaces/payment';
+import { IPaymentGroup } from '../../interfaces/payment-group';
+import { ISinglePayment } from '../../interfaces/payment';
 import { EquivalentValueAction } from "./actions";
 import { ComputeEquivalentValueError } from "./errors";
 
 export interface EquivalentValueState {
   computing: boolean;
   computeEquivalentValueError?: ComputeEquivalentValueError;
-  group: IPaymentGroupWithOptionalInterest;
+  group: IPaymentGroup;
   equivalentPayment?: ISinglePayment;
 }
 
@@ -33,7 +33,7 @@ export const reducer: Reducer<EquivalentValueState, EquivalentValueAction> = (st
       const updatedPayment = action.payment;
       const currentGroup = state.group;
       const currentPayments = currentGroup.payments;
-      const resultingGroup: IPaymentGroupWithOptionalInterest = {
+      const resultingGroup: IPaymentGroup = {
         ...currentGroup,
         payments: currentPayments.map(
           p =>

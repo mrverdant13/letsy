@@ -5,24 +5,20 @@ import { EquivalentValueContext } from './EquivalentValueContext';
 import { IPayment, ISinglePayment } from '../../interfaces/payment';
 import httpClient from '../../apis/_client';
 import { EquivalentValueAction } from "./actions";
+import { IPaymentGroup } from '../../interfaces/payment-group';
 
 interface Props {
   children: React.ReactNode;
+  initialGroup: IPaymentGroup;
 }
 
-const INITIAL_STATE: EquivalentValueState = {
-  computing: false,
-  group: {
-    name: 'Untitled',
-    payments: [
-    ],
-  },
-};
-
-export const EquivalentValueProvider: FC<Props> = ({ children }) => {
+export const EquivalentValueProvider: FC<Props> = ({ children, initialGroup }) => {
   const [state, dispatch] = useReducer<Reducer<EquivalentValueState, EquivalentValueAction>>(
     reducer,
-    INITIAL_STATE,
+    {
+      computing: false,
+      group: initialGroup,
+    },
   );
 
   const addPayment = (payment: IPayment) => {
