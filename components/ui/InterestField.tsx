@@ -1,4 +1,4 @@
-import { FC, useEffect, ChangeEvent, useState } from 'react';
+import { FC, useEffect, ChangeEvent, useState, useMemo } from 'react';
 
 import { TextField, InputAdornment } from '@mui/material';
 
@@ -7,23 +7,39 @@ import { useEquivalenceGroupContext } from '../../context/equivalence-group/cont
 import useDebounce from '../../hooks/useDebounce';
 
 export const InterestField: FC = () => {
-  const { group: { interest }, updateInterest } = useEquivalenceGroupContext();
+  const { loading, group: { interest }, updateInterest } = useEquivalenceGroupContext();
   const [inMemoryInterest, setInMemoryInterest] = useState(interest);
-  const [isInvalid, setIsInvalid] = useState<boolean>(false);
-  const debouncedInterest = useDebounce(inMemoryInterest, 500);
+  const isValid = useMemo(
+    () =>
+      InterestValidationSchema.safeParse(inMemoryInterest).success,
+    [inMemoryInterest],
+  );
+  const debouncedInterest = useDebounce(isValid ? inMemoryInterest : NaN, 500);
+
+  const hasBeenChanged = interest !== inMemoryInterest;
+  const hasBeenApplied = interest === debouncedInterest;
+  const canApplyChange = isValid && inMemoryInterest === debouncedInterest;
+
+  const color = useMemo(
+    () => {
+      if (!isValid) return 'error';
+      if (hasBeenChanged) return 'warning';
+    },
+    [isValid, hasBeenChanged],
+  );
 
   useEffect(
     () => {
-      if (debouncedInterest === interest) return;
+      if (loading) return;
+      if (hasBeenApplied) return;
+      if (!canApplyChange) return;
       updateInterest(debouncedInterest);
     },
-    [interest, debouncedInterest],
+    [loading, debouncedInterest, hasBeenApplied, canApplyChange],
   );
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.valueAsNumber;
-    const result = InterestValidationSchema.safeParse(value);
-    setIsInvalid(!result.success);
     setInMemoryInterest(value);
   };
 
@@ -34,9 +50,10 @@ export const InterestField: FC = () => {
       type="number"
       value={inMemoryInterest}
       onChange={onChange}
+      onBlur={() => setInMemoryInterest(interest)}
       label="Interest"
-      error={isInvalid}
       size="small"
+      color={color}
       sx={{
         width: '15ch',
       }}
