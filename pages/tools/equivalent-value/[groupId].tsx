@@ -6,7 +6,6 @@ import { unstable_getServerSession } from 'next-auth';
 
 import { BasePageLayout } from '../../../components/layouts/BasePageLayout';
 import { EquivalentValueProvider } from '../../../context/equivalent-value/EquivalentValueProvider';
-import { useEquivalentValueContext } from '../../../context/equivalent-value/EquivalentValueContext';
 import { UniformSeriesPayment } from '../../../components/ui/UniformSeriesPayment';
 import { IPaymentType } from '../../../interfaces/payment-type';
 import { SinglePayment } from '../../../components/ui/SinglePayment';
