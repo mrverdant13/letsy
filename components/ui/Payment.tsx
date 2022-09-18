@@ -1,6 +1,6 @@
 import { FC, MouseEvent, useState } from 'react';
 
-import { Box, ListItemIcon, Menu, MenuItem } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, ListItemIcon, Menu, MenuItem } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
 
 import { IPayment } from '../../interfaces/payment';
@@ -21,6 +21,7 @@ interface ContextMenuCoordinates {
 }
 
 export const Payment: FC<Props> = ({ payment, blockWidth, blockHeight }) => {
+  const [dialogIsOpen, setDialogIsOpen] = useState<boolean>(false);
   const { deletePayment } = useEquivalenceGroupContext();
   const [contextMenuCoordinates, setContextMenuCoordinates] = useState<ContextMenuCoordinates | undefined>(undefined);
   const contextMenuIsOpen = Boolean(contextMenuCoordinates);
@@ -38,9 +39,18 @@ export const Payment: FC<Props> = ({ payment, blockWidth, blockHeight }) => {
     setContextMenuCoordinates(undefined);
   }
 
+  const openDialog = () => {
+    setDialogIsOpen(true);
+  };
+
+  const closeDialog = () => {
+    setDialogIsOpen(false);
+  };
+
   const removePayment = () => {
     deletePayment(payment.name);
     closeContextMenu();
+    closeDialog();
   }
 
   return (
@@ -85,13 +95,45 @@ export const Payment: FC<Props> = ({ payment, blockWidth, blockHeight }) => {
             : undefined
         }
       >
-        <MenuItem onClick={removePayment}>
+        <MenuItem onClick={() => {
+          openDialog();
+          closeContextMenu();
+        }}>
           <ListItemIcon>
             <Delete fontSize="small" />
           </ListItemIcon>
           Delete
         </MenuItem>
       </Menu>
+      <Dialog
+        open={dialogIsOpen}
+        onClose={closeDialog}
+        aria-labelledby="removal-confirmation-dialog-title"
+        aria-describedby="removal-confirmation-dialog-description"
+      >
+        <DialogTitle id="removal-confirmation-dialog-title">
+          Remove payment
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="removal-confirmation-dialog-description">
+            Are you sure you want to delete the <u><em><strong>{payment.name}</strong></em></u> payment?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={closeDialog}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={removePayment}
+            color="error"
+            variant="outlined"
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
