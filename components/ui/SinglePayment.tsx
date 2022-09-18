@@ -4,7 +4,7 @@ import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
 import { Box, Stack } from '@mui/material';
 
 import { ISinglePayment } from '../../interfaces/payment';
-import { useEquivalentValueContext } from '../../context/equivalent-value/EquivalentValueContext';
+import { useEquivalenceGroupContext } from '../../context/equivalence-group/context';
 
 interface Props {
   blockWidth: number;
@@ -14,7 +14,7 @@ interface Props {
 
 export const SinglePayment: FC<Props> = ({ blockWidth, blockHeight, payment }) => {
   const ref = useRef(null);
-  const { updatePayment } = useEquivalentValueContext();
+  const { updatePayment } = useEquivalenceGroupContext();
   const color: string = useMemo(
     () => payment.amount > 0 ? '#00FF00AA' : '#FF0000AA',
     [payment.amount],
