@@ -18,6 +18,7 @@ import { IPaymentGroup } from '../../../interfaces/payment-group';
 import { ObjectIdStringValidationSchema } from '../../../validation-schemas/object-id';
 import { PaymentGroupModel } from '../../../database/models/payment-group';
 import { useEquivalenceGroupContext } from '../../../context/equivalence-group/context';
+import { EquivalenceProvider } from '../../../context/equivalence/EquivalenceProvider';
 
 interface Props {
   group: IPaymentGroup;
@@ -28,38 +29,40 @@ const EquivalentValuePage: NextPage<Props> = ({ group: initialGroup }) => {
     <EquivalenceGroupProvider
       initialGroup={initialGroup}
     >
-      <EquivalentValueProvider
-        initialGroup={initialGroup}
-      >
-        <BasePageLayout
-          title="Equivalent Value Calculator"
-          description="Calculate the equivalent value of a set of payments in a given time."
-          displayFooter={false}
-          sx={{
-            display: undefined,
-            position: 'relative',
-          }}
+      <EquivalenceProvider>
+        <EquivalentValueProvider
+          initialGroup={initialGroup}
         >
-          <Box
+          <BasePageLayout
+            title="Equivalent Value Calculator"
+            description="Calculate the equivalent value of a set of payments in a given time."
+            displayFooter={false}
             sx={{
-              width: '100%',
-              height: '100%',
-              position: 'absolute',
+              display: undefined,
+              position: 'relative',
             }}
           >
-            <EquivalentValuePageContent />
-          </Box>
-          <Box
-            sx={{
-              position: 'absolute',
-              bottom: 15,
-              right: 15,
-            }}
-          >
-            <AddPaymentButton />
-          </Box>
-        </BasePageLayout>
-      </EquivalentValueProvider>
+            <Box
+              sx={{
+                width: '100%',
+                height: '100%',
+                position: 'absolute',
+              }}
+            >
+              <EquivalentValuePageContent />
+            </Box>
+            <Box
+              sx={{
+                position: 'absolute',
+                bottom: 15,
+                right: 15,
+              }}
+            >
+              <AddPaymentButton />
+            </Box>
+          </BasePageLayout>
+        </EquivalentValueProvider>
+      </EquivalenceProvider>
     </EquivalenceGroupProvider>
   );
 }
