@@ -104,7 +104,6 @@ const calculateEquivalentValueForUniformSeriesPayment = (
     payment,
     interest,
   );
-  console.log(equivalentPaymentAtTheBeginning);
   return calculateEquivalentValueForSinglePayment(
     equivalentPaymentAtTheBeginning,
     interest,
