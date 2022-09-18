@@ -1,15 +1,22 @@
 import { IPaymentGroup } from '../../interfaces/payment-group';
+import { Error } from './errors';
 
-type AddingPaymentAction = {
-  type: '[EquivalenceGroup] Adding Payment';
+type LoadingAction = {
+  type: '[EquivalenceGroup] Loading';
 };
 
-type AddedPaymentAction = {
-  type: '[EquivalenceGroup] Added Payment';
+type LoadedAction = {
+  type: '[EquivalenceGroup] Loaded';
   group: IPaymentGroup;
 };
 
+type AddErrorAction = {
+  type: '[EquivalenceGroup] Add Errors';
+  errors: Error[];
+}
+
 export type EquivalenceGroupAction =
-  | AddingPaymentAction
-  | AddedPaymentAction
+  | LoadingAction
+  | LoadedAction
+  | AddErrorAction
   ;

@@ -1,6 +1,8 @@
 import { IPaymentGroup } from '../../interfaces/payment-group';
+import { Error } from './errors';
 
 export interface EquivalenceGroupState {
   group: IPaymentGroup;
-  addingPayment: boolean;
+  loading: boolean;
+  errors: Error[];
 }

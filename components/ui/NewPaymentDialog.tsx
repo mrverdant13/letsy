@@ -136,15 +136,15 @@ export const NewPaymentDialog: FC<Props> = ({
 }
 
 const SubmitButton: FC<Props> = ({ close }) => {
-  const { addingPayment, group: { payments } } = useEquivalenceGroupContext();
+  const { loading, group: { payments } } = useEquivalenceGroupContext();
   const { submitForm, isSubmitting, setSubmitting, resetForm } = useFormikContext();
   const currentPaymentsCount = payments.length;
   const previousPaymentsCount = usePrevious(currentPaymentsCount);
   useEffect(
     () => {
-      setSubmitting(addingPayment);
+      setSubmitting(loading);
     },
-    [addingPayment],
+    [loading],
   );
   useEffect(
     () => {
