@@ -49,9 +49,9 @@ export const EquivalenceGroupProvider: FC<Props> = ({ children, initialGroup }) 
     dispatch({
       type: '[EquivalenceGroup] Loading',
     });
-    const currentGroup = state.group;
+    const groupId = state.group._id;
     const response = await httpClient.patch<IPaymentGroup>(
-      `/equivalent-value/groups/${currentGroup._id}`,
+      `/equivalent-value/groups/${groupId}`,
       { interest },
     );
     dispatch({
