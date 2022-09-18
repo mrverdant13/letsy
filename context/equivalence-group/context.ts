@@ -8,6 +8,7 @@ type CtxProps =
   & {
     addPayment: (payment: IPayment) => Promise<void>;
     updateInterest: (interest: number) => Promise<void>;
+    updatePayment: (name: string, payment: IPayment) => Promise<void>;
   }
   ;
 

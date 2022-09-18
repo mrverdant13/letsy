@@ -60,12 +60,38 @@ export const EquivalenceGroupProvider: FC<Props> = ({ children, initialGroup }) 
     });
   }
 
+  const updatePayment = async (name: string, payment: IPayment) => {
+    if (state.loading) return;
+    dispatch({
+      type: '[EquivalenceGroup] Loading',
+    });
+    const group = state.group;
+    const groupId = group._id;
+    const payments = group.payments;
+    const response = await httpClient.patch<IPaymentGroup>(
+      `/equivalent-value/groups/${groupId}`,
+      {
+        payments: payments.map(
+          p =>
+            p.name == name
+              ? payment
+              : p,
+        ),
+      },
+    );
+    dispatch({
+      type: '[EquivalenceGroup] Loaded',
+      group: response.data,
+    });
+  }
+
   return (
     <EquivalenceGroupContext.Provider
       value={{
         ...state,
         addPayment,
         updateInterest,
+        updatePayment,
       }}
     >
       {children}
