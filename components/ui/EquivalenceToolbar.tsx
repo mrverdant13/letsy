@@ -1,12 +1,12 @@
 import { Paper, Stack, Typography, Divider } from '@mui/material';
 
-import { useEquivalentValueContext } from '../../context/equivalent-value/EquivalentValueContext';
 import { useEquivalenceGroupContext } from '../../context/equivalence-group/context';
 import { InterestField } from './InterestField';
+import { useEquivalenceContext } from '../../context/equivalence/context';
 
 export const EquivalenceToolbar = () => {
   const { loading } = useEquivalenceGroupContext();
-  const { computeEquivalentValueError, equivalentPayment } = useEquivalentValueContext();
+  const { error, equivalentPayment } = useEquivalenceContext();
 
   return (
     <Paper
@@ -30,14 +30,14 @@ export const EquivalenceToolbar = () => {
           </Typography>
         }
         {
-          computeEquivalentValueError &&
+          error &&
           <Typography>
-            {computeEquivalentValueError.code}
+            {error.code}
           </Typography>
         }
         {
           !loading &&
-          !computeEquivalentValueError &&
+          !error &&
           equivalentPayment &&
           <Typography>
             Amount: {equivalentPayment.amount} - Period: {equivalentPayment.position}
