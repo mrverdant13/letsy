@@ -18,6 +18,7 @@ import { ObjectIdStringValidationSchema } from '../../../validation-schemas/obje
 import { PaymentGroupModel } from '../../../database/models/payment-group';
 import { useEquivalenceGroupContext } from '../../../context/equivalence-group/context';
 import { EquivalenceProvider } from '../../../context/equivalence/EquivalenceProvider';
+import { Payment } from '../../../components/ui/Payment';
 
 interface Props {
   group: IPaymentGroup;
@@ -220,36 +221,12 @@ const EquivalentValueChart: FC = () => {
             {
               group.payments.map<JSX.Element>((p, i) => {
                 return (
-                  <Box
-                    key={p.name}
-                    sx={{
-                      height: blockHeight,
-                    }}
-                  >
-                    {
-                      (() => {
-                        switch (p.type) {
-                          case IPaymentType.single: {
-                            return <SinglePayment
-                              key={p.name}
-                              payment={p}
-                              blockWidth={blockWidth}
-                              blockHeight={blockHeight}
-                            />;
-                          }
-                          case IPaymentType.uniformSeries: {
-                            return <UniformSeriesPayment
-                              key={p.name}
-                              payment={p}
-                              blockWidth={blockWidth}
-                              blockHeight={blockHeight}
-                            />;
-                          }
-                        }
-                      })()
-                    }
-                  </Box>
-                )
+                  <Payment
+                    payment={p}
+                    blockWidth={blockWidth}
+                    blockHeight={blockHeight}
+                  />
+                );
               })
             }
           </Stack>
