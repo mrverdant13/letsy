@@ -56,6 +56,7 @@ export const EquivalenceProvider: FC<Props> = ({ children }) => {
         computeEquivalence,
       }}
     >
+      {children}
     </EquivalenceContext.Provider>
   )
 }
