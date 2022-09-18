@@ -1,6 +1,6 @@
 import { useState, useMemo, useRef, FC } from 'react';
 
-import { Box, Stack } from '@mui/material';
+import { Box, Stack, Button, Typography, Tooltip, Divider } from '@mui/material';
 import { NumberSize, Resizable, ResizeDirection } from 're-resizable';
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
 
@@ -189,24 +189,58 @@ export const UniformSeriesPayment: FC<Props> = ({ blockWidth, blockHeight, payme
             width: currentOffset,
           }}
         />
-        <Draggable
-          key={`${currentOffset}`}
-          nodeRef={ref}
-          axis="x"
-          grid={[blockWidth, blockHeight]}
-          onDrag={onDrag}
-          onStart={onDragStart}
-          onStop={onDragEnd}
+        <Tooltip
+          followCursor
+          title={(
+            <Stack>
+              <Typography
+                variant="body1"
+                sx={{
+                  fontWeight: 'bold',
+                }}
+              >
+                {payment.name}
+              </Typography>
+              <Divider />
+              <Typography variant="caption">
+                Position: {payment.position}
+              </Typography>
+              <Typography variant="caption">
+                Periodic amount: {payment.periodicAmount}
+              </Typography>
+              <Typography variant="caption">
+                Periods: {payment.periods}
+              </Typography>
+            </Stack>
+          )}
         >
           <Box
-            ref={ref}
             sx={{
-              width: currentWidth,
-              height: blockHeight,
-              cursor: isDragging ? 'grabbing' : 'grab',
+              m: 0,
+              p: 0,
+              minWidth: 0,
             }}
-          />
-        </Draggable>
+          >
+            <Draggable
+              key={`${currentOffset}`}
+              nodeRef={ref}
+              axis="x"
+              grid={[blockWidth, blockHeight]}
+              onDrag={onDrag}
+              onStart={onDragStart}
+              onStop={onDragEnd}
+            >
+              <Box
+                ref={ref}
+                sx={{
+                  width: currentWidth,
+                  height: blockHeight,
+                  cursor: isDragging ? 'grabbing' : 'grab',
+                }}
+              />
+            </Draggable>
+          </Box>
+        </Tooltip>
       </Stack>
     </Box>
   );

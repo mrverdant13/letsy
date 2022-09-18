@@ -1,7 +1,7 @@
 import { useState, FC, useRef, useMemo } from 'react';
 
 import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
-import { Box, Stack } from '@mui/material';
+import { Box, Stack, Tooltip, Typography, Button, Divider } from '@mui/material';
 
 import { ISinglePayment } from '../../interfaces/payment';
 import { useEquivalenceGroupContext } from '../../context/equivalence-group/context';
@@ -113,25 +113,56 @@ export const SinglePayment: FC<Props> = ({ blockWidth, blockHeight, payment }) =
             width: currentOffset,
           }}
         />
-        <Draggable
-          key={`${currentOffset}`}
-          nodeRef={ref}
-          axis="x"
-          grid={[blockWidth, blockHeight]}
-          onDrag={onDrag}
-          onStart={onDragStart}
-          onStop={onDragEnd}
+        <Tooltip
+          followCursor
+          title={(
+            <Stack>
+              <Typography
+                variant="body1"
+                sx={{
+                  fontWeight: 'bold',
+                }}
+              >
+                {payment.name}
+              </Typography>
+              <Divider />
+              <Typography variant="caption">
+                Position: {payment.position}
+              </Typography>
+              <Typography variant="caption">
+                Amount: {payment.amount}
+              </Typography>
+            </Stack>
+          )}
         >
           <Box
-            component="div"
-            ref={ref}
             sx={{
-              width: width,
-              height: blockHeight,
-              cursor: isDragging ? 'grabbing' : 'grab',
+              m: 0,
+              p: 0,
+              minWidth: 0,
             }}
-          />
-        </Draggable>
+          >
+            <Draggable
+              key={`${currentOffset}`}
+              nodeRef={ref}
+              axis="x"
+              grid={[blockWidth, blockHeight]}
+              onDrag={onDrag}
+              onStart={onDragStart}
+              onStop={onDragEnd}
+            >
+              <Box
+                component="div"
+                ref={ref}
+                sx={{
+                  width: width,
+                  height: blockHeight,
+                  cursor: isDragging ? 'grabbing' : 'grab',
+                }}
+              />
+            </Draggable>
+          </Box>
+        </Tooltip>
       </Stack>
     </Box>
   );
