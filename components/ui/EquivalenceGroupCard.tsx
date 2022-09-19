@@ -25,7 +25,7 @@ export const EquivalenceGroupCard: FC<Props> = ({ group, sx = {} }) => {
   const isValid = PaymentGroupNameValidationSchema.safeParse(inMemoryName).success;
 
   const showActions = () => {
-    if (isEditing) return;
+    if (isEditing || removeDialogIsOpen) return;
     setActionsAreVisible(true);
   }
 
