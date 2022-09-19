@@ -770,6 +770,11 @@ chalk@^4.0.0:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
 
+classnames@^2.0.0:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.3.2.tgz#351d813bf0137fcc6a76a16b88208d2560a0d924"
+  integrity sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==
+
 clsx@^1.1.1, clsx@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/clsx/-/clsx-1.2.1.tgz#0ddc4a20a549b59c93a4116bb26f5294ca17dc12"
@@ -940,6 +945,18 @@ emoji-regex@^9.2.2:
   version "9.2.2"
   resolved "https://registry.npmjs.org/emoji-regex/-/emoji-regex-9.2.2.tgz"
   integrity sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==
+
+equation-parser@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/equation-parser/-/equation-parser-0.3.1.tgz#4e3ea783c3dbbb251e053543533b8de0566efe1a"
+  integrity sha512-lFSqabHXcR6ds0KtjxQnMssph+gvnP+u7zf2hzB0CVmzIYbTnJv1mAwy/spO74/TbUf2A3ng4Mu+f81oUqCq+w==
+
+equation-resolver@^1.0.0-rc.1:
+  version "1.0.0-rc.1"
+  resolved "https://registry.yarnpkg.com/equation-resolver/-/equation-resolver-1.0.0-rc.1.tgz#ed52e0456ee824f156e6457cc2848e36a161fdd6"
+  integrity sha512-vS49YDKo4/Yx3IXEJ1Cfq3KuBsOqqv22Bi9pLZ1x4pvWnwbs2WVBNZld95tax8E0DLH+C/aDmzHwUenuXh0QHA==
+  dependencies:
+    equation-parser "^0.3.1"
 
 error-ex@^1.3.1:
   version "1.3.2"
@@ -2154,6 +2171,15 @@ react-draggable@^4.4.5:
   dependencies:
     clsx "^1.1.1"
     prop-types "^15.8.1"
+
+react-equation@^1.0.0-rc.1:
+  version "1.0.0-rc.1"
+  resolved "https://registry.yarnpkg.com/react-equation/-/react-equation-1.0.0-rc.1.tgz#6d1cdc7bd4520718da0a88ea6d82f916ff99197b"
+  integrity sha512-B6q8p/L24QgaC8haTa9yqZW2T0SbuNIHz845y6F6YXXo+MBeozFE6mECLZGYsu1Y99wE3F0LU+cwXDOOiQ2G2g==
+  dependencies:
+    classnames "^2.0.0"
+    equation-parser "^0.3.1"
+    equation-resolver "^1.0.0-rc.1"
 
 react-fast-compare@^2.0.1:
   version "2.0.4"
