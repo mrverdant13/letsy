@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Add } from "@mui/icons-material"
 import { Fab, Tooltip } from "@mui/material"
 
-import { NewPaymentDialog } from "./NewPaymentDialog"
+import { PaymentDialog } from "./PaymentDialog"
 
 export const AddPaymentButton = () => {
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
@@ -25,7 +25,7 @@ export const AddPaymentButton = () => {
           <Add />
         </Fab>
       </Tooltip>
-      <NewPaymentDialog
+      <PaymentDialog
         isOpen={dialogIsOpen}
         close={close}
       />
