@@ -21,7 +21,7 @@ interface Props {
 
 const titleId = 'new-payment-dialog-title';
 
-export const NewPaymentDialog: FC<Props> = (props) => {
+export const PaymentDialog: FC<Props> = (props) => {
   const { isOpen, close, payment } = props;
   const isEditing = Boolean(payment);
   const theme = useTheme();

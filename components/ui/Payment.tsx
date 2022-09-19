@@ -8,7 +8,7 @@ import { IPaymentType } from '../../interfaces/payment-type';
 import { SinglePayment } from './SinglePayment';
 import { UniformSeriesPayment } from './UniformSeriesPayment';
 import { useEquivalenceGroupContext } from '../../context/equivalence-group/context';
-import { NewPaymentDialog } from './NewPaymentDialog';
+import { PaymentDialog } from './PaymentDialog';
 
 interface Props {
   payment: IPayment;
@@ -151,7 +151,7 @@ export const Payment: FC<Props> = ({ payment, blockWidth, blockHeight }) => {
           </Button>
         </DialogActions>
       </Dialog>
-      <NewPaymentDialog
+      <PaymentDialog
         isOpen={editDialogIsOpen}
         close={closeEditDialog}
         payment={payment}
