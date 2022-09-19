@@ -5,7 +5,7 @@ import { EquivalenceGroupsAction } from './actions';
 import { reducer } from './reducer';
 import { EquivalenceGroupsContext } from './context';
 import httpClient from '../../apis/_client';
-import { IPaymentGroupsPage } from '../../interfaces/payment-group';
+import { IPaymentGroupsPage, IPaymentGroup } from '../../interfaces/payment-group';
 import { PaginationParams } from '../../interfaces/pagination-params';
 import { buildQueryString } from '../../utils/url';
 
@@ -40,11 +40,46 @@ export const EquivalenceGroupsProvider: FC<Props> = ({ children }) => {
     }
   };
 
+  const renameGroup = async (groupId: string, newName: string) => {
+    const groupsPage = state.groupsPage;
+    if (groupsPage == undefined) return;
+    const groups = groupsPage.groups;
+    const containsGroup = groups.some(g => g._id === groupId);
+    if (!containsGroup) return;
+    dispatch({
+      type: '[EquivalenceGroups] Loading',
+    });
+    try {
+      const response = await httpClient.patch<IPaymentGroup>(
+        `/equivalent-value/groups/${groupId}`,
+        { name: newName },
+      );
+      dispatch({
+        type: '[EquivalenceGroups] Loaded',
+        groupsPage: {
+          ...groupsPage,
+          groups: groups.map(
+            (g) =>
+              g._id === groupId
+                ? response.data
+                : g,
+          ),
+        },
+      });
+    } catch (e) {
+      dispatch({
+        type: '[EquivalenceGroups] Failed Load',
+        error: { code: 'unexpected' },
+      });
+    }
+  }
+
   return (
     <EquivalenceGroupsContext.Provider
       value={{
         ...state,
         getGroups,
+        renameGroup,
       }}
     >
       {children}
