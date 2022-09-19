@@ -19,7 +19,7 @@ const EquivalentValueGroupsPage: NextPage = () => {
     <EquivalenceGroupsProvider>
       <EquivalentValueGroupsProvider>
         <BasePageLayout
-          title="Equivalent Value Calculation - Groups"
+          tabTitle="Equivalent Value Calculation - Groups"
           description="Payment groups"
           displayFooter={false}
         >
