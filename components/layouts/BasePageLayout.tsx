@@ -1,4 +1,4 @@
-import { FC } from "react"
+import { FC, ReactNode } from "react"
 
 import Head from "next/head";
 
@@ -6,7 +6,8 @@ import { Box, Link, Stack, SxProps, Theme } from "@mui/material";
 import { LetsyAppBar } from "../ui/LetsyAppBar";
 
 interface Props {
-  title?: string;
+  tabTitle?: string;
+  appBarTitle?: string | ReactNode;
   description?: string;
   keywords?: string[];
   displayFooter?: boolean;
@@ -23,7 +24,8 @@ const baseSx: SxProps<Theme> = {
 };
 
 export const BasePageLayout: FC<Props> = ({
-  title = 'Letsy',
+  tabTitle: title = 'Letsy',
+  appBarTitle,
   description = 'Analyze your investment options',
   keywords = [
     'investment',
@@ -48,7 +50,7 @@ export const BasePageLayout: FC<Props> = ({
           height: '100vh',
         }}
       >
-        <LetsyAppBar />
+        <LetsyAppBar title={appBarTitle} />
         <Box
           sx={{
             ...baseSx,
