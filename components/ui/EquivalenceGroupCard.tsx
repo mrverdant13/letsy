@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { ChangeEvent, FC, KeyboardEvent, useState } from "react";
 
-import { Card, CardActionArea, CardContent, IconButton, Stack, SxProps, TextField, Theme, Tooltip, Typography } from "@mui/material"
+import { Button, Card, CardActionArea, CardContent, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Stack, SxProps, TextField, Theme, Tooltip, Typography } from "@mui/material"
 
 import { IPaymentGroup } from "../../interfaces/payment-group";
-import { Edit } from "@mui/icons-material";
+import { Delete, Edit, Remove } from "@mui/icons-material";
 import { PaymentGroupNameValidationSchema } from "../../validation-schemas/payment-group";
 import { useEquivalenceGroupsContext } from "../../context/equivalence-groups/context";
 
@@ -16,7 +16,8 @@ interface Props {
 }
 
 export const EquivalenceGroupCard: FC<Props> = ({ group, sx = {} }) => {
-  const { loading: isLoading, renameGroup } = useEquivalenceGroupsContext();
+  const [removeDialogIsOpen, setRemoveDialogIsOpen] = useState<boolean>(false);
+  const { loading: isLoading, renameGroup, deleteGroup } = useEquivalenceGroupsContext();
   const [actionsAreVisible, setActionsAreVisible] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const { name, payments } = group;
@@ -47,6 +48,19 @@ export const EquivalenceGroupCard: FC<Props> = ({ group, sx = {} }) => {
   const onBlur = () => {
     setInMemoryName(name);
     setIsEditing(false);
+  }
+
+  const openRemoveDialog = () => {
+    setRemoveDialogIsOpen(true);
+  }
+
+  const closeRemoveDialog = () => {
+    setRemoveDialogIsOpen(false);
+  }
+
+  const removeGroup = () => {
+    deleteGroup(group._id);
+    closeRemoveDialog();
   }
 
   return (
@@ -114,12 +128,55 @@ export const EquivalenceGroupCard: FC<Props> = ({ group, sx = {} }) => {
                       <Edit fontSize="small" />
                     </IconButton>
                   </Tooltip>
+                  <Tooltip title="Delete">
+                    <IconButton
+                      size="small"
+                      onClick={
+                        (e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          openRemoveDialog();
+                        }
+                      }
+                    >
+                      <Delete fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
                 </Stack>
               }
             </Stack>
           </CardContent>
         </CardActionArea>
       </Link>
+      <Dialog
+        open={removeDialogIsOpen}
+        onClose={closeRemoveDialog}
+        aria-labelledby="removal-confirmation-dialog-title"
+        aria-describedby="removal-confirmation-dialog-description"
+      >
+        <DialogTitle id="removal-confirmation-dialog-title">
+          Remove group
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="removal-confirmation-dialog-description">
+            Are you sure you want to delete the <u><em><strong>{group.name}</strong></em></u> group?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={closeRemoveDialog}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={removeGroup}
+            color="error"
+            variant="outlined"
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Card>
   )
 }
