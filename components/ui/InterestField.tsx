@@ -1,13 +1,15 @@
 import { FC, useEffect, ChangeEvent, useState, useMemo } from 'react';
 
 import { TextField, InputAdornment } from '@mui/material';
+import { Percent } from '@mui/icons-material';
 
 import { InterestValidationSchema } from '../../validation-schemas/interests';
 import { useEquivalenceGroupContext } from '../../context/equivalence-group/context';
 import useDebounce from '../../hooks/useDebounce';
 
 export const InterestField: FC = () => {
-  const { loading, group: { interest }, updateInterest } = useEquivalenceGroupContext();
+  const { loading, group: { interest: rawInterest }, updateInterest } = useEquivalenceGroupContext();
+  const interest = rawInterest * 100;
   const [inMemoryInterest, setInMemoryInterest] = useState(interest);
   const isValid = useMemo(
     () =>
@@ -33,7 +35,7 @@ export const InterestField: FC = () => {
       if (loading) return;
       if (hasBeenApplied) return;
       if (!canApplyChange) return;
-      updateInterest(debouncedInterest);
+      updateInterest(debouncedInterest / 100);
     },
     [loading, debouncedInterest, hasBeenApplied, canApplyChange],
   );
@@ -60,7 +62,7 @@ export const InterestField: FC = () => {
       InputProps={{
         endAdornment: (
           <InputAdornment position="end">
-            %
+            <Percent fontSize="small" />
           </InputAdornment>
         ),
       }}
