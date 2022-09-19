@@ -8,6 +8,7 @@ type CtxProps =
   & {
     getGroups: (paginationParams: PaginationParams) => Promise<void>;
     renameGroup: (groupId: string, newName: string) => Promise<void>;
+    deleteGroup: (groupId: string) => Promise<void>;
   }
   ;
 
