@@ -1,6 +1,7 @@
 import { FC, useEffect, ChangeEvent, useState, useMemo } from 'react';
 
 import { TextField, InputAdornment } from '@mui/material';
+import { Percent } from '@mui/icons-material';
 
 import { InterestValidationSchema } from '../../validation-schemas/interests';
 import { useEquivalenceGroupContext } from '../../context/equivalence-group/context';
@@ -61,7 +62,7 @@ export const InterestField: FC = () => {
       InputProps={{
         endAdornment: (
           <InputAdornment position="end">
-            %
+            <Percent fontSize="small" />
           </InputAdornment>
         ),
       }}
