@@ -40,6 +40,36 @@ export const EquivalenceGroupsProvider: FC<Props> = ({ children }) => {
     }
   };
 
+  const deleteGroup = async (groupId: string) => {
+    const groupsPage = state.groupsPage;
+    if (groupsPage == undefined) return;
+    const groups = groupsPage.groups;
+    const containsGroup = groups.some(g => g._id === groupId);
+    if (!containsGroup) return;
+    dispatch({
+      type: '[EquivalenceGroups] Loading',
+    });
+    try {
+      const response = await httpClient.delete<IPaymentGroup>(
+        `/equivalent-value/groups/${groupId}`,
+      );
+      dispatch({
+        type: '[EquivalenceGroups] Loaded',
+        groupsPage: {
+          ...groupsPage,
+          groups: groups.filter(
+            (g) => g._id !== groupId
+          ),
+        },
+      });
+    } catch (e) {
+      dispatch({
+        type: '[EquivalenceGroups] Failed Load',
+        error: { code: 'unexpected' },
+      });
+    }
+  }
+
   const renameGroup = async (groupId: string, newName: string) => {
     const groupsPage = state.groupsPage;
     if (groupsPage == undefined) return;
@@ -57,7 +87,7 @@ export const EquivalenceGroupsProvider: FC<Props> = ({ children }) => {
       dispatch({
         type: '[EquivalenceGroups] Loaded',
         groupsPage: {
-          ...groupsPage,
+          count: groupsPage.count - 1,
           groups: groups.map(
             (g) =>
               g._id === groupId
@@ -80,6 +110,7 @@ export const EquivalenceGroupsProvider: FC<Props> = ({ children }) => {
         ...state,
         getGroups,
         renameGroup,
+        deleteGroup,
       }}
     >
       {children}

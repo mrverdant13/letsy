@@ -20,6 +20,12 @@ type UpdateEquivalenceGroup =
   | IPaymentGroup
   ;
 
+type DeleteEquivalenceGroup =
+  | UnauthorizedResponse
+  | ForbiddenResponse
+  | NotFoundResponse
+  ;
+
 type Data =
   | MethodNotAllowedResponse
   | UpdateEquivalenceGroup
@@ -29,6 +35,9 @@ export default function (req: NextApiRequest, res: NextApiResponse<Data>) {
   switch (req.method) {
     case 'PATCH': {
       return updateGroup(req, res);
+    }
+    case 'DELETE': {
+      return deleteGroup(req, res);
     }
   }
   return res.status(405).json({ message: 'Method Not Allowed' });
@@ -52,4 +61,16 @@ const updateGroup = async (req: NextApiRequest, res: NextApiResponse<UpdateEquiv
   if (group.owner?.toString() !== session.userId) return res.status(403).json({ code: 403, message: 'Forbidden' });
   const resultingGroup = await group.set(result.data).save();
   return res.status(200).json(resultingGroup.toJSON());
+}
+
+const deleteGroup = async (req: NextApiRequest, res: NextApiResponse<DeleteEquivalenceGroup>) => {
+  const session = await unstable_getServerSession(req, res, authOptions);
+  if (!session) return res.status(401).send({ message: 'Unauthorized' });
+  const { groupId } = req.query as { groupId: string };
+  await db.connect();
+  const group = await PaymentGroupModel.findById(groupId);
+  if (group == null) return res.status(404).json({ code: 404, message: 'Not Found' });
+  if (group.owner?.toString() !== session.userId) return res.status(403).json({ code: 403, message: 'Forbidden' });
+  await group.delete();
+  return res.status(200).json({});
 }
