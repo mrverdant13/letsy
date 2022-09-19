@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, useMediaQuery, useTheme, Box, Stack } from '@mui/material';
 import { Field, Form, Formik, useFormikContext } from 'formik';
@@ -11,35 +11,36 @@ import { PaymentValidationSchema } from '../../validation-schemas/payment';
 import { SpecificPaymentGroupPaymentsValidationSchema } from '../../validation-schemas/payment-group';
 import { useEquivalenceGroupContext } from '../../context/equivalence-group/context';
 import usePrevious from '../../hooks/usePrevious';
+import { IPayment } from '../../interfaces/payment';
 
 interface Props {
   isOpen: boolean;
   close: () => void;
+  payment?: IPayment;
 }
 
 const titleId = 'new-payment-dialog-title';
 
-export const NewPaymentDialog: FC<Props> = ({
-  isOpen,
-  close,
-}) => {
+export const NewPaymentDialog: FC<Props> = (props) => {
+  const { isOpen, close, payment } = props;
+  const isEditing = Boolean(payment);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  const { group, addPayment } = useEquivalenceGroupContext();
+  const { group, addPayment, updatePayment } = useEquivalenceGroupContext();
   return (
     <Formik
       initialValues={{
-        name: '',
-        type: '',
-        position: 0,
+        // Base
+        name: payment?.name ?? '',
+        type: payment?.type ?? '',
+        position: payment?.position ?? 0,
 
         // Simple payment
-        amount: 0,
+        amount: (payment?.type === IPaymentType.single) ? payment?.amount : 0,
 
         // Uniform series payment
-        periodicAmount: 0,
-        periods: 0,
-
+        periodicAmount: (payment?.type === IPaymentType.uniformSeries) ? payment?.periodicAmount : 0,
+        periods: (payment?.type === IPaymentType.uniformSeries) ? payment?.periods : 0,
       }}
       validate={
         (values) => {
@@ -65,8 +66,12 @@ export const NewPaymentDialog: FC<Props> = ({
       }
       onSubmit={
         (values) => {
-          const payment = PaymentValidationSchema.parse(values);
-          addPayment(payment);
+          const resultingPayment = PaymentValidationSchema.parse(values);
+          if (isEditing) {
+            updatePayment(payment!.name, resultingPayment);
+          } else {
+            addPayment(resultingPayment);
+          }
         }
       }
     >
@@ -107,6 +112,7 @@ export const NewPaymentDialog: FC<Props> = ({
                       id="type"
                       name="type"
                       label="Payment type"
+                      isEditing={isEditing}
                     />
                     {
                       type &&
@@ -121,10 +127,7 @@ export const NewPaymentDialog: FC<Props> = ({
                   >
                     Cancel
                   </Button>
-                  <SubmitButton
-                    isOpen={isOpen}
-                    close={close}
-                  />
+                  <SubmitButton {...props} />
                 </DialogActions>
               </Box>
             </Dialog>
@@ -135,25 +138,27 @@ export const NewPaymentDialog: FC<Props> = ({
   )
 }
 
-const SubmitButton: FC<Props> = ({ close }) => {
-  const { loading, group: { payments } } = useEquivalenceGroupContext();
+const SubmitButton: FC<Props> = ({ close, payment }) => {
+  const isEditing = Boolean(payment);
+  const { loading: isLoading, group, errors } = useEquivalenceGroupContext();
   const { submitForm, isSubmitting, setSubmitting, resetForm } = useFormikContext();
-  const currentPaymentsCount = payments.length;
-  const previousPaymentsCount = usePrevious(currentPaymentsCount);
+  const wasLoading = usePrevious(isLoading);
+  const hasErrors = errors.length > 0;
   useEffect(
     () => {
-      setSubmitting(loading);
+      setSubmitting(isLoading);
     },
-    [loading],
+    [isLoading],
   );
   useEffect(
     () => {
-      if (previousPaymentsCount == null) return;
-      if (previousPaymentsCount == currentPaymentsCount) return;
+      if (isLoading) return;
+      if (!wasLoading) return;
+      if (hasErrors) return;
       resetForm();
       close();
     },
-    [currentPaymentsCount, previousPaymentsCount],
+    [wasLoading, isLoading, hasErrors],
   );
   const submit = () => {
     if (isSubmitting) return;
@@ -162,8 +167,9 @@ const SubmitButton: FC<Props> = ({ close }) => {
   return (
     <Button
       disabled={isSubmitting}
-      onClick={submit}>
-      Create
+      onClick={submit}
+    >
+      {isEditing ? 'Save' : 'Create'}
     </Button>
 
   );

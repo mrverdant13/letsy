@@ -11,10 +11,11 @@ interface PaymentTypeDropdownProps {
   id: string;
   name: string;
   label: string;
+  isEditing: boolean;
 }
 
 export const PaymentTypeDropdown: FC<PaymentTypeDropdownProps> = (props) => {
-  const resultingProps = { ...props, type: 'text' };
+  const { isEditing, ...resultingProps } = { ...props, type: 'text' };
   const label = resultingProps.label;
   const [field, meta, helpers] = useField(resultingProps);
   const { isSubmitting } = useFormikContext();
@@ -28,7 +29,7 @@ export const PaymentTypeDropdown: FC<PaymentTypeDropdownProps> = (props) => {
       required
       fullWidth
       error={showError}
-      disabled={isSubmitting}
+      disabled={isSubmitting || isEditing}
     >
       <InputLabel
         id={labelId}

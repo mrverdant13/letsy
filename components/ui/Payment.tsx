@@ -8,6 +8,7 @@ import { IPaymentType } from '../../interfaces/payment-type';
 import { SinglePayment } from './SinglePayment';
 import { UniformSeriesPayment } from './UniformSeriesPayment';
 import { useEquivalenceGroupContext } from '../../context/equivalence-group/context';
+import { NewPaymentDialog } from './NewPaymentDialog';
 
 interface Props {
   payment: IPayment;
@@ -21,7 +22,8 @@ interface ContextMenuCoordinates {
 }
 
 export const Payment: FC<Props> = ({ payment, blockWidth, blockHeight }) => {
-  const [dialogIsOpen, setDialogIsOpen] = useState<boolean>(false);
+  const [removeDialogIsOpen, setRemoveDialogIsOpen] = useState<boolean>(false);
+  const [editDialogIsOpen, setEditDialogIsOpen] = useState<boolean>(false);
   const { deletePayment } = useEquivalenceGroupContext();
   const [contextMenuCoordinates, setContextMenuCoordinates] = useState<ContextMenuCoordinates | undefined>(undefined);
   const contextMenuIsOpen = Boolean(contextMenuCoordinates);
@@ -39,18 +41,30 @@ export const Payment: FC<Props> = ({ payment, blockWidth, blockHeight }) => {
     setContextMenuCoordinates(undefined);
   }
 
-  const openDialog = () => {
-    setDialogIsOpen(true);
-  };
+  const openRemoveDialog = () => {
+    setRemoveDialogIsOpen(true);
+    closeContextMenu();
+  }
 
-  const closeDialog = () => {
-    setDialogIsOpen(false);
-  };
+  const closeRemoveDialog = () => {
+    setRemoveDialogIsOpen(false);
+    closeContextMenu();
+  }
+
+  const openEditDialog = () => {
+    setEditDialogIsOpen(true);
+    closeContextMenu();
+  }
+
+  const closeEditDialog = () => {
+    setEditDialogIsOpen(false);
+    closeContextMenu();
+  }
 
   const removePayment = () => {
     deletePayment(payment.name);
     closeContextMenu();
-    closeDialog();
+    closeRemoveDialog();
   }
 
   return (
@@ -95,19 +109,22 @@ export const Payment: FC<Props> = ({ payment, blockWidth, blockHeight }) => {
             : undefined
         }
       >
-        <MenuItem onClick={() => {
-          openDialog();
-          closeContextMenu();
-        }}>
+        <MenuItem onClick={openRemoveDialog}>
           <ListItemIcon>
             <Delete fontSize="small" />
           </ListItemIcon>
           Delete
         </MenuItem>
+        <MenuItem onClick={openEditDialog}>
+          <ListItemIcon>
+            <Edit fontSize="small" />
+          </ListItemIcon>
+          Edit
+        </MenuItem>
       </Menu>
       <Dialog
-        open={dialogIsOpen}
-        onClose={closeDialog}
+        open={removeDialogIsOpen}
+        onClose={closeRemoveDialog}
         aria-labelledby="removal-confirmation-dialog-title"
         aria-describedby="removal-confirmation-dialog-description"
       >
@@ -121,7 +138,7 @@ export const Payment: FC<Props> = ({ payment, blockWidth, blockHeight }) => {
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={closeDialog}
+            onClick={closeRemoveDialog}
           >
             Cancel
           </Button>
@@ -134,6 +151,11 @@ export const Payment: FC<Props> = ({ payment, blockWidth, blockHeight }) => {
           </Button>
         </DialogActions>
       </Dialog>
+      <NewPaymentDialog
+        isOpen={editDialogIsOpen}
+        close={closeEditDialog}
+        payment={payment}
+      />
     </>
   );
 }
