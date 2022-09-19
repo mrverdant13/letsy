@@ -7,6 +7,7 @@ type CtxProps =
   & EquivalenceGroupsState
   & {
     getGroups: (paginationParams: PaginationParams) => Promise<void>;
+    renameGroup: (groupId: string, newName: string) => Promise<void>;
   }
   ;
 

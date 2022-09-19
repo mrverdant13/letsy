@@ -18,7 +18,7 @@ interface PageProps {
 const SignInPage: NextPage<PageProps> = ({ providers }) => {
   return (
     <BasePageLayout
-      title="Sign In"
+      tabTitle="Sign In"
       description="Sign in to your account."
       sx={{
         p: 2,

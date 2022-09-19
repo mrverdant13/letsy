@@ -1,7 +1,7 @@
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
-import React, { FC, useState, useMemo } from 'react';
+import React, { FC, useState, useMemo, ChangeEvent, KeyboardEvent, useEffect } from 'react';
 
-import { Stack, Box, Typography } from '@mui/material';
+import { Stack, Box, Typography, TextField } from '@mui/material';
 import { unstable_getServerSession } from 'next-auth';
 
 import { BasePageLayout } from '../../../components/layouts/BasePageLayout';
@@ -19,6 +19,8 @@ import { PaymentGroupModel } from '../../../database/models/payment-group';
 import { useEquivalenceGroupContext } from '../../../context/equivalence-group/context';
 import { EquivalenceProvider } from '../../../context/equivalence/EquivalenceProvider';
 import { Payment } from '../../../components/ui/Payment';
+import { PaymentGroupNameValidationSchema } from '../../../validation-schemas/payment-group';
+import usePrevious from '../../../hooks/usePrevious';
 
 interface Props {
   group: IPaymentGroup;
@@ -30,34 +32,7 @@ const EquivalentValuePage: NextPage<Props> = ({ group: initialGroup }) => {
       initialGroup={initialGroup}
     >
       <EquivalenceProvider>
-        <BasePageLayout
-          title="Equivalent Value Calculator"
-          description="Calculate the equivalent value of a set of payments in a given time."
-          displayFooter={false}
-          sx={{
-            display: undefined,
-            position: 'relative',
-          }}
-        >
-          <Box
-            sx={{
-              width: '100%',
-              height: '100%',
-              position: 'absolute',
-            }}
-          >
-            <EquivalentValuePageContent />
-          </Box>
-          <Box
-            sx={{
-              position: 'absolute',
-              bottom: 15,
-              right: 15,
-            }}
-          >
-            <AddPaymentButton />
-          </Box>
-        </BasePageLayout>
+        <EquivalentValuePageContent />
       </EquivalenceProvider>
     </EquivalenceGroupProvider>
   );
@@ -97,21 +72,120 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context: Get
 }
 
 const EquivalentValuePageContent: FC = () => {
-  const { group: { payments } } = useEquivalenceGroupContext();
+  const { group: { payments, name } } = useEquivalenceGroupContext();
   return (
-    <Stack
+    <BasePageLayout
+      tabTitle={`Equivalence - ${name}`}
+      appBarTitle={<AppBarTitle />}
+      description="Calculate the equivalent value of a set of payments in a given time."
+      displayFooter={false}
       sx={{
-        width: '100%',
-        height: '100%',
+        display: undefined,
+        position: 'relative',
       }}
     >
-      <EquivalenceToolbar />
+      <Box
+        sx={{
+          width: '100%',
+          height: '100%',
+          position: 'absolute',
+        }}
+      >
+        <Stack
+          sx={{
+            width: '100%',
+            height: '100%',
+          }}
+        >
+          <EquivalenceToolbar />
+          {
+            payments.length === 0
+              ? <NoPaymentsMessage />
+              : <EquivalentValueChart />
+          }
+        </Stack>
+      </Box>
+      <Box
+        sx={{
+          position: 'absolute',
+          bottom: 15,
+          right: 15,
+        }}
+      >
+        <AddPaymentButton />
+      </Box>
+    </BasePageLayout>
+  );
+}
+
+const AppBarTitle: FC = () => {
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const { loading: isLoading, group: { name }, errors, updateName } = useEquivalenceGroupContext();
+  const [inMemoryName, setInMemoryName] = useState(name);
+  const isValid = PaymentGroupNameValidationSchema.safeParse(inMemoryName).success;
+  const wasLoading = usePrevious(isLoading);
+  const hasErrors = errors.length > 0;
+  const hasBeenChanged = name !== inMemoryName;
+
+  useEffect(
+    () => {
+      if (isLoading) return;
+      if (!wasLoading) return;
+      if (hasErrors) return;
+      setIsEditing(false);
+    },
+    [isLoading, wasLoading, hasErrors, hasBeenChanged]
+  );
+
+  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setInMemoryName(value);
+  };
+
+  const onKeyDown = (event: KeyboardEvent) => {
+    if (!isValid) return;
+    if (event.key !== 'Enter') return;
+    if (name === inMemoryName) setIsEditing(false);
+    else updateName(inMemoryName);
+  }
+
+  const onBlur = () => {
+    setInMemoryName(name);
+    setIsEditing(false);
+  }
+
+  return (
+    <Box
+      sx={{
+        mx: 1,
+      }}
+    >
       {
-        payments.length === 0
-          ? <NoPaymentsMessage />
-          : <EquivalentValueChart />
+        isEditing
+          ?
+          <TextField
+            autoFocus
+            required
+            disabled={isLoading}
+            id="name"
+            type="text"
+            value={inMemoryName}
+            onChange={onChange}
+            onKeyDown={onKeyDown}
+            onBlur={onBlur}
+            size="small"
+            error={!isValid}
+            fullWidth
+          />
+          :
+          <Typography
+            variant="h6"
+            onDoubleClick={() => setIsEditing(true)}
+          >
+            {name}
+          </Typography>
       }
-    </Stack>
+    </Box>
   );
 }
 
@@ -222,6 +296,7 @@ const EquivalentValueChart: FC = () => {
               group.payments.map<JSX.Element>((p, i) => {
                 return (
                   <Payment
+                    key={p.name}
                     payment={p}
                     blockWidth={blockWidth}
                     blockHeight={blockHeight}
