@@ -14,6 +14,10 @@ const tools: ToolData[] = [
     route: '/tools/equivalent-value',
     name: 'Equivalent Value Calculator',
   },
+  {
+    route: '/tools/equivalent-interest-rate',
+    name: 'Equivalent Interest Rate Calculator',
+  },
 ];
 
 export const ToolsButton = () => {
