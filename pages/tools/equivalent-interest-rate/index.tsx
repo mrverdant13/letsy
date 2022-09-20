@@ -1,14 +1,15 @@
 import { NextPage } from 'next';
-import { FC, Ref, useEffect, useRef, useState } from 'react';
+import { FC, ReactNode, Ref, useEffect, useRef, useState } from 'react';
 
 import { z } from 'zod';
-import { Percent } from '@mui/icons-material';
-import { Box, Card, FilledInputProps, InputAdornment, Stack, TextField, Typography } from '@mui/material';
+import { Help, Percent } from '@mui/icons-material';
+import { Box, Card, CardActionArea, FilledInputProps, InputAdornment, Stack, TextField, Tooltip, Typography } from '@mui/material';
 import { Equation, EquationEvaluate } from "react-equation";
 import { Field, FieldProps, Form, Formik, useFormikContext } from 'formik';
 
 import { BasePageLayout } from '../../../components/layouts';
 import { InterestValidationSchema } from '../../../validation-schemas/interests';
+import { amber, green, grey, indigo } from '@mui/material/colors';
 
 const EquivalentInterestRatePage: NextPage = () => {
   return (
@@ -44,6 +45,10 @@ const desiredInterestToken = 'i_d';
 const knownInterestToken = 'i_k';
 const desiredCompoundingPeriodsToken = 'p_d';
 const knownCompoundingPeriodsToken = 'p_k';
+const equationTypography = {
+  xs: 'h5',
+  sm: 'h4',
+};
 
 const buildEquation = (
   knownInterest: string | number,
@@ -73,6 +78,87 @@ const EquivalentInterestRateDataValidationSchema = z.object({
 
 type EquivalentInterestRateData = z.infer<typeof EquivalentInterestRateDataValidationSchema>;
 
+const buildCompoundingPeriodsDescription = (name: string): NonNullable<ReactNode> => {
+  return (
+    <>
+      <Typography variant="inherit">
+        The quantity of {name} periods within a given time span.
+        <br />
+        <br />
+        <strong>Example:</strong>
+        <br />
+        From monthly to quarterly
+        <br />
+        ● Known periods within a year: 12
+        <br />
+        &nbsp;&nbsp;&nbsp;There are 12 months in a year
+        <br />
+        ● Desired periods within a year: 4
+        <br />
+        &nbsp;&nbsp;&nbsp;There are 4 quarters in a year
+      </Typography>
+      <Stack
+        mt={1}
+        p={1}
+        spacing={1}
+        sx={{
+          textAlign: 'center',
+          border: '1px solid white',
+          borderRadius: '5px',
+        }}
+      >
+        <Typography
+          variant="inherit"
+        >
+          Year
+        </Typography>
+        <Stack
+          direction="row"
+          spacing={0.5}
+          justifyContent="space-around"
+        >
+          {
+            Array.from(
+              { length: 12 },
+              (x, i) => (
+                <Box
+                  sx={{
+                    width: '100%',
+                    backgroundColor: indigo[400],
+                  }}
+                >
+                  M
+                </Box>
+              )
+            )
+          }
+        </Stack>
+        <Stack
+          direction="row"
+          spacing={0.5}
+          justifyContent="space-around"
+        >
+          {
+            Array.from(
+              { length: 4 },
+              (x, i) => (
+                <Box
+                  sx={{
+                    width: '100%',
+                    backgroundColor: green[700],
+                  }}
+                >
+                  Q
+                </Box>
+              )
+            )
+          }
+        </Stack>
+      </Stack>
+    </>
+  );
+}
+
 const EquivalentInterestRatePageContent = () => {
   const tokenizedEquation = buildEquation(
     knownInterestToken,
@@ -81,11 +167,6 @@ const EquivalentInterestRatePageContent = () => {
 
   );
   const tokenizedComparison = `${desiredInterestToken} = ${tokenizedEquation}`
-
-  const equationTypography = {
-    xs: 'h5',
-    sm: 'h4',
-  };
 
   const percentAdornment = (
     <InputAdornment
@@ -154,17 +235,22 @@ const EquivalentInterestRatePageContent = () => {
                 InputProps={{
                   endAdornment: percentAdornment,
                 }}
-              />
-              <ValueField
-                token={desiredCompoundingPeriodsToken}
+                name="Known Interest Rate"
+                description="The interest rate that you want to convert."
               />
               <ValueField
                 token={knownCompoundingPeriodsToken}
+                name="Known Periods In Time Window"
+                description={buildCompoundingPeriodsDescription('known')}
+              />
+              <ValueField
+                token={desiredCompoundingPeriodsToken}
+                name="Desired Periods In Time Window"
+                description={buildCompoundingPeriodsDescription('desired')}
               />
               <Box
                 sx={{
                   pt: 5,
-                  typography: equationTypography,
                   width: "100%",
                 }}
               >
@@ -180,10 +266,12 @@ const EquivalentInterestRatePageContent = () => {
 
 interface ValueFieldProps {
   token: string;
+  name: string;
+  description: NonNullable<ReactNode> | string;
   InputProps?: Partial<FilledInputProps>;
 }
 
-const ValueField: FC<ValueFieldProps> = ({ token, InputProps }) => {
+const ValueField: FC<ValueFieldProps> = ({ token, name, description, InputProps }) => {
   return (
     <Stack
       direction="row"
@@ -218,6 +306,34 @@ const ValueField: FC<ValueFieldProps> = ({ token, InputProps }) => {
           )
         }
       </Field>
+      <Tooltip
+        title={(
+          <>
+            <Typography variant="body1">
+              {name} ( {<Equation value={knownInterestToken} />} )
+            </Typography>
+            <Typography variant="caption">
+              {description}
+            </Typography>
+          </>
+        )}
+        componentsProps={{
+          tooltip: {
+            sx: {
+              maxWidth: 600,
+              py: 1,
+              px: 2,
+              backgroundColor: grey[800],
+            },
+          },
+        }}
+      >
+        <Help
+          sx={{
+            mx: 1,
+          }}
+        />
+      </Tooltip>
     </Stack>
 
   );
@@ -249,31 +365,57 @@ const Result: FC = () => {
         alignItems="center"
         justifyContent="center"
       >
-        <EquationEvaluate
-          ref={equationRef}
-          value={evaluatedEquation}
-          decimals={{
-            type: 'fixed',
-            digits,
-          }}
-        />
-        <Card
-          variant="outlined"
+        <Typography
           sx={{
-            px: 3,
-            py: 1,
+            typography: equationTypography,
           }}
         >
-          <Equation
-            value={`${desiredInterestToken}=${Number((desiredInterest * 100).toFixed(digits - 2))}%`}
+          <EquationEvaluate
+            ref={equationRef}
+            value={evaluatedEquation}
+            decimals={{
+              type: 'fixed',
+              digits,
+            }}
           />
-        </Card>
+        </Typography>
+        <Tooltip
+          title="Copy to clipboard"
+        >
+          <Card variant="outlined">
+            <CardActionArea
+              sx={{
+                px: 3,
+                py: 1,
+                pointer: 'cursor',
+                typography: 'inherit',
+              }}
+              onClick={() => navigator.clipboard.writeText(`${desiredInterest}`)}
+            >
+              <Typography
+                sx={{
+                  typography: equationTypography,
+                }}
+              >
+                <Equation
+                  value={`${desiredInterestToken}=${Number((desiredInterest * 100).toFixed(digits - 2))}%`}
+                />
+              </Typography>
+            </CardActionArea>
+          </Card>
+        </Tooltip>
       </Stack>
     );
   }
   return (
-    <Equation
-      value={evaluatedComparison}
-    />
+    <Typography
+      sx={{
+        typography: equationTypography,
+      }}
+    >
+      <Equation
+        value={evaluatedComparison}
+      />
+    </Typography>
   );
 }
