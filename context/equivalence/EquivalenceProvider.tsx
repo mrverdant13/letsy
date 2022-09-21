@@ -20,6 +20,12 @@ export const EquivalenceProvider: FC<Props> = ({ children }) => {
     },
   );
 
+  const reset = () => {
+    dispatch({
+      type: '[Equivalence] Reset',
+    });
+  }
+
   const computeEquivalence = async (
     group: IPaymentGroup,
     targetPeriod: number,
