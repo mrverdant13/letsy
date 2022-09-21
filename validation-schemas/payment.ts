@@ -52,6 +52,10 @@ export const UniformSeriesPaymentValidationSchema = BasePaymentValidationSchema.
       )
       .positive(
         'Periods must be a positive integer',
+      )
+      .gt(
+        1,
+        'Periods must be an integer greater than 1. Consider a single payment.',
       ),
   }),
 );
