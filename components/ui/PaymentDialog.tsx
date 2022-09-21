@@ -54,7 +54,7 @@ export const PaymentDialog: FC<Props> = (props) => {
                 errors[field] = field === 'type' ? 'Invalid value' : issue.message;
               }
             });
-          } else {
+          } else if (payment?.name !== values.name) {
             const payments = [...group.payments, values];
             const paymentsValidationResult = SpecificPaymentGroupPaymentsValidationSchema.safeParse(payments);
             if (!paymentsValidationResult.success) {
