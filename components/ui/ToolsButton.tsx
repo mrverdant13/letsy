@@ -79,12 +79,4 @@ export const ToolsButton = () => {
       </Menu>
     </>
   );
-
-  return (
-    <Tooltip title="Tools">
-      <IconButton aria-label="Go to tools page">
-        <Handyman />
-      </IconButton>
-    </Tooltip>
-  )
 }
