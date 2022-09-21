@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useMemo } from 'react';
 
 import { unstable_getServerSession } from 'next-auth';
-import { Box, Typography, Stack, Pagination, Button } from '@mui/material';
+import { Box, Typography, Stack, Pagination, Button, Skeleton } from '@mui/material';
 
 import { BasePageLayout } from '../../../components/layouts/BasePageLayout';
 import { authOptions } from '../../api/auth/[...nextauth]';
@@ -52,6 +52,21 @@ const EquivalentValueGroupsPageContent = () => {
       getGroups({ offset, limit });
     },
     [offset, limit],
+  );
+
+  const skeleton = (
+    <>
+      <Skeleton variant="rounded">
+        <Pagination />
+      </Skeleton>
+      <EquivalenceGroupsList
+        type="loading"
+        skeletonsCount={limit}
+      />
+      <Skeleton variant="rounded">
+        <Pagination />
+      </Skeleton>
+    </>
   );
 
   return (
@@ -118,20 +133,19 @@ const EquivalentValueGroupsPageContent = () => {
               alignItems="center"
               justifyContent="space-between"
             >
-              {pagination}
               {
                 loading
-                  ? (
-                    <Box sx={{ p: { xs: 'auto', sm: 2 } }}>
-                      <Typography variant="h5" textAlign="center">
-                        Loading
-                      </Typography>
-                    </Box>
-                  )
+                  ? (skeleton)
                   : (
                     <>
-                      <EquivalenceGroupsList groups={groupsPage.groups} />
                       {pagination}
+                      <EquivalenceGroupsList
+                        type="loaded"
+                        groups={groupsPage.groups}
+                      />
+                      <Box sx={{ py: 2 }}>
+                        {pagination}
+                      </Box>
                     </>
                   )
               }
@@ -142,11 +156,13 @@ const EquivalentValueGroupsPageContent = () => {
       {
         loading &&
         !groupsPage &&
-        <Box sx={{ p: { xs: 'auto', sm: 2 } }}>
-          <Typography variant="h5" textAlign="center">
-            Loading
-          </Typography>
-        </Box>
+        <Stack
+          spacing={2}
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          {skeleton}
+        </Stack>
       }
       {error &&
         <Typography variant="h5" textAlign="center">
