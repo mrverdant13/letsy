@@ -1,12 +1,12 @@
-import { Paper, Stack, Typography, Divider, CircularProgress } from '@mui/material';
+import { Paper, Stack, Typography, Divider, CircularProgress, Box, Skeleton } from '@mui/material';
 
 import { useEquivalenceGroupContext } from '../../context/equivalence-group/context';
 import { InterestField } from './InterestField';
 import { useEquivalenceContext } from '../../context/equivalence/context';
 
 export const EquivalenceToolbar = () => {
-  const { loading, errors } = useEquivalenceGroupContext();
-  const { error, equivalentPayment } = useEquivalenceContext();
+  const { loading: loadingGroup } = useEquivalenceGroupContext();
+  const { loading: loadingEquivalence, equivalentPayment } = useEquivalenceContext();
 
   return (
     <Paper
@@ -23,22 +23,31 @@ export const EquivalenceToolbar = () => {
       >
         <InterestField />
         <Divider orientation="vertical" flexItem />
+        <Stack
+          direction="row"
+          sx={{
+            flex: 1,
+          }}
+        >
+          {
+            loadingGroup &&
+            <CircularProgress color="inherit" />
+          }
+        </Stack>
         {
-          loading &&
-          <CircularProgress color="inherit" />
+          loadingEquivalence &&
+          <Skeleton
+            animation="wave"
+            sx={{
+              width: 250,
+            }}
+          />
         }
         {
-          error &&
-          <Typography>
-            {error.code}
-          </Typography>
-        }
-        {
-          !loading &&
-          !error &&
+          !loadingEquivalence &&
           equivalentPayment &&
           <Typography>
-            Amount: {equivalentPayment.amount} - Period: {equivalentPayment.position}
+            Amount: {(Math.floor(equivalentPayment.amount * 100) / 100).toFixed(2)} - Period: {equivalentPayment.position}
           </Typography>
         }
       </Stack>
