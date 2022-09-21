@@ -2,20 +2,53 @@ import { FC, useEffect, ChangeEvent, useState, useMemo } from 'react';
 
 import { TextField, InputAdornment } from '@mui/material';
 import { Percent } from '@mui/icons-material';
+import { Field, Form, Formik, useField, FieldProps } from 'formik';
 
 import { InterestValidationSchema } from '../../validation-schemas/interests';
 import { useEquivalenceGroupContext } from '../../context/equivalence-group/context';
 import useDebounce from '../../hooks/useDebounce';
 
+const sanitize = (value: number, decimals: number): number => {
+  const power = Math.pow(10, decimals);
+  const powered = value * power;
+  const roundedPowered = Math.floor(powered);
+  const sanitized = roundedPowered / power;
+  return sanitized;
+}
+const sanitizeRelativeInterest = (value: number) => sanitize(value, 6);
+const sanitizePorcentualInterest = (value: number) => sanitize(value, 4);
+
 export const InterestField: FC = () => {
-  const { loading, group: { interest: rawInterest }, updateInterest } = useEquivalenceGroupContext();
-  const interest = rawInterest * 100;
-  const [inMemoryInterest, setInMemoryInterest] = useState(interest);
-  const isValid = useMemo(
-    () =>
-      InterestValidationSchema.safeParse(inMemoryInterest).success,
-    [inMemoryInterest],
+  const { group: { interest: initialInterest } } = useEquivalenceGroupContext();
+  return (
+    <Formik
+      initialValues={{ interest: sanitizePorcentualInterest(initialInterest * 100) }}
+      validateOnMount
+      validate={
+        (values) => {
+          const errors: { [key: string]: (string | undefined) } = {};
+          const result = InterestValidationSchema.safeParse(values.interest);
+          if (!result.success) {
+            errors.interest = result.error.issues[0].message
+          }
+          return errors;
+        }
+      }
+      onSubmit={() => { }}
+    >
+      <Form>
+        <InterestFieldContent />
+      </Form>
+    </Formik >
   );
+}
+
+const InterestFieldContent: FC = () => {
+  const { loading, group: { interest: rawInterest }, updateInterest } = useEquivalenceGroupContext();
+  const interest = sanitizePorcentualInterest(rawInterest * 100);
+  const [field, meta, helpers] = useField<number>('interest');
+  const inMemoryInterest = field.value;
+  const isValid = meta.error == undefined;
   const debouncedInterest = useDebounce(isValid ? inMemoryInterest : NaN, 500);
 
   const hasBeenChanged = interest !== inMemoryInterest;
@@ -35,24 +68,31 @@ export const InterestField: FC = () => {
       if (loading) return;
       if (hasBeenApplied) return;
       if (!canApplyChange) return;
-      updateInterest(debouncedInterest / 100);
+      const actualInterest = sanitizeRelativeInterest(debouncedInterest / 100);
+      updateInterest(actualInterest);
     },
     [loading, debouncedInterest, hasBeenApplied, canApplyChange],
   );
 
-  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.valueAsNumber;
-    setInMemoryInterest(value);
-  };
-
   return (
     <TextField
+      {...field}
       required
       id="interest"
       type="number"
-      value={inMemoryInterest}
-      onChange={onChange}
-      onBlur={() => setInMemoryInterest(interest)}
+      onBlur={() => {
+        if (loading) return;
+        return helpers.setValue(sanitizePorcentualInterest(interest));
+      }}
+      onChange={(e: ChangeEvent<HTMLInputElement>) => {
+        const raw = e.target.valueAsNumber;
+        if (isNaN(raw)) {
+          field.onChange(e);
+          return;
+        }
+        const sanitized = sanitizePorcentualInterest(raw);
+        helpers.setValue(sanitized);
+      }}
       label="Interest"
       size="small"
       color={color}
@@ -66,6 +106,7 @@ export const InterestField: FC = () => {
           </InputAdornment>
         ),
       }}
+      inputProps={{ min: 0 }}
     />
   );
 }
