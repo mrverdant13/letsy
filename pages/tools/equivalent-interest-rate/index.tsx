@@ -312,7 +312,7 @@ const ValueField: FC<ValueFieldProps> = ({ token, name, description, InputProps 
         title={(
           <>
             <Typography variant="body1">
-              {name} ( {<Equation value={knownInterestToken} />} )
+              {name} ( {<Equation value={token} />} )
             </Typography>
             <Typography variant="caption">
               {description}
