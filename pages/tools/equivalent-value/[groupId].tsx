@@ -21,6 +21,7 @@ import { EquivalenceProvider } from '../../../context/equivalence/EquivalencePro
 import { Payment } from '../../../components/ui/Payment';
 import { PaymentGroupNameValidationSchema } from '../../../validation-schemas/payment-group';
 import usePrevious from '../../../hooks/usePrevious';
+import { useEquivalenceContext } from '../../../context/equivalence/context';
 
 interface Props {
   group: IPaymentGroup;
@@ -72,7 +73,19 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context: Get
 }
 
 const EquivalentValuePageContent: FC = () => {
-  const { group: { payments, name } } = useEquivalenceGroupContext();
+  const { loading, group } = useEquivalenceGroupContext();
+  const { payments, name } = group;
+  const { equivalentPayment, computeEquivalence } = useEquivalenceContext();
+  const wasLoading = usePrevious(loading);
+  useEffect(
+    () => {
+      if (equivalentPayment == undefined) return;
+      if (loading) return;
+      if (!wasLoading) return;
+      computeEquivalence(group, equivalentPayment.position);
+    },
+    [loading, wasLoading, equivalentPayment, group],
+  );
   return (
     <BasePageLayout
       tabTitle={`Equivalence - ${name}`}
