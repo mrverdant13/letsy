@@ -21,6 +21,9 @@ export const PaymentAttributes: FC<PaymentAttributesProps> = ({
         name="position"
         type="number"
         label="Position"
+        inputProps={{
+          min: 0,
+        }}
       />
       {
         (() => {
@@ -76,6 +79,9 @@ const UniformSeriesPaymentAttributes: FC = () => {
         name="periods"
         type="number"
         label="Periods"
+        inputProps={{
+          min: 0,
+        }}
       />
     </>
   );
