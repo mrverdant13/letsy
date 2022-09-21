@@ -1,4 +1,4 @@
-import { FC, useEffect, ChangeEvent, useState, useMemo } from 'react';
+import { FC, useEffect, ChangeEvent, useState, useMemo, KeyboardEvent } from 'react';
 
 import { TextField, InputAdornment } from '@mui/material';
 import { Percent } from '@mui/icons-material';
@@ -74,12 +74,19 @@ const InterestFieldContent: FC = () => {
     [loading, debouncedInterest, hasBeenApplied, canApplyChange],
   );
 
+  const onKeyDown = (event: KeyboardEvent) => {
+    if (event.key !== 'Enter') return;
+    if (!(event.target instanceof HTMLInputElement)) return;
+    event.target.blur();
+  }
+
   return (
     <TextField
       {...field}
       required
       id="interest"
       type="number"
+      onKeyDown={onKeyDown}
       onBlur={() => {
         if (loading) return;
         return helpers.setValue(sanitizePorcentualInterest(interest));
