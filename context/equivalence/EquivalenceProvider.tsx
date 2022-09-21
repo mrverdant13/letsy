@@ -20,7 +20,7 @@ export const EquivalenceProvider: FC<Props> = ({ children }) => {
     },
   );
 
-  const reset = () => {
+  const reset = async () => {
     dispatch({
       type: '[Equivalence] Reset',
     });
@@ -59,6 +59,7 @@ export const EquivalenceProvider: FC<Props> = ({ children }) => {
     <EquivalenceContext.Provider
       value={{
         ...state,
+        reset,
         computeEquivalence,
       }}
     >

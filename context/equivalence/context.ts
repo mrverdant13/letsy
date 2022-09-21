@@ -6,6 +6,7 @@ import { IPaymentGroup } from '../../interfaces/payment-group';
 type CtxProps =
   & EquivalenceState
   & {
+    reset: () => Promise<void>;
     computeEquivalence: (group: IPaymentGroup, targetPosition: number) => Promise<void>;
   }
   ;
