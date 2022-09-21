@@ -1,4 +1,4 @@
-import { FC, MouseEvent, useState } from 'react';
+import { FC, MouseEvent, useEffect, useState } from 'react';
 
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, ListItemIcon, Menu, MenuItem } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
@@ -67,10 +67,18 @@ export const Payment: FC<Props> = ({ payment, blockWidth, blockHeight }) => {
     closeRemoveDialog();
   }
 
+  useEffect(
+    () => {
+      closeRemoveDialog();
+      closeEditDialog();
+    },
+    [JSON.stringify(payment)]
+  );
+
   return (
     <>
       <Box
-        key={payment.name}
+        key={JSON.stringify(payment)}
         sx={{
           height: blockHeight,
         }}
