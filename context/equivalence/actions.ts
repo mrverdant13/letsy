@@ -1,6 +1,10 @@
 import { ISinglePayment } from '../../interfaces/payment';
 import { EquivalenceError } from './errors';
 
+type ResetAction = {
+  type: '[Equivalence] Reset';
+};
+
 type LoadingAction = {
   type: '[Equivalence] Loading';
 };
@@ -16,6 +20,7 @@ type AddErrorAction = {
 };
 
 export type EquivalenceAction =
+  | ResetAction
   | LoadingAction
   | LoadedAction
   | AddErrorAction
