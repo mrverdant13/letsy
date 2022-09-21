@@ -1,11 +1,11 @@
-import { Paper, Stack, Typography, Divider } from '@mui/material';
+import { Paper, Stack, Typography, Divider, CircularProgress } from '@mui/material';
 
 import { useEquivalenceGroupContext } from '../../context/equivalence-group/context';
 import { InterestField } from './InterestField';
 import { useEquivalenceContext } from '../../context/equivalence/context';
 
 export const EquivalenceToolbar = () => {
-  const { loading } = useEquivalenceGroupContext();
+  const { loading, errors } = useEquivalenceGroupContext();
   const { error, equivalentPayment } = useEquivalenceContext();
 
   return (
@@ -25,9 +25,7 @@ export const EquivalenceToolbar = () => {
         <Divider orientation="vertical" flexItem />
         {
           loading &&
-          <Typography>
-            Loading...
-          </Typography>
+          <CircularProgress color="inherit" />
         }
         {
           error &&
