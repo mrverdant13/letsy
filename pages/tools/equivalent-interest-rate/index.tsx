@@ -122,6 +122,7 @@ const buildCompoundingPeriodsDescription = (name: string): NonNullable<ReactNode
               { length: 12 },
               (x, i) => (
                 <Box
+                  key={i}
                   sx={{
                     width: '100%',
                     backgroundColor: indigo[400],
@@ -143,6 +144,7 @@ const buildCompoundingPeriodsDescription = (name: string): NonNullable<ReactNode
               { length: 4 },
               (x, i) => (
                 <Box
+                  key={i}
                   sx={{
                     width: '100%',
                     backgroundColor: green[700],
@@ -310,7 +312,7 @@ const ValueField: FC<ValueFieldProps> = ({ token, name, description, InputProps 
         title={(
           <>
             <Typography variant="body1">
-              {name} ( {<Equation value={knownInterestToken} />} )
+              {name} ( {<Equation value={token} />} )
             </Typography>
             <Typography variant="caption">
               {description}
@@ -328,11 +330,7 @@ const ValueField: FC<ValueFieldProps> = ({ token, name, description, InputProps 
           },
         }}
       >
-        <Help
-          sx={{
-            mx: 1,
-          }}
-        />
+        <Help sx={{ mx: 1 }} />
       </Tooltip>
     </Stack>
 
@@ -344,7 +342,7 @@ const Result: FC = () => {
   const equationRef = useRef<any>();
   const [desiredInterest, setDesiredInterest] = useState<number>(0);
   const evaluatedEquation = buildEquation(
-    (!dirty || errors[knownInterestToken]) ? knownInterestToken : (values[knownInterestToken] / 100),
+    (!dirty || errors[knownInterestToken]) ? knownInterestToken : (values[knownInterestToken] / 100).toFixed(digits),
     (!dirty || errors[knownCompoundingPeriodsToken]) ? knownCompoundingPeriodsToken : values[knownCompoundingPeriodsToken],
     (!dirty || errors[desiredCompoundingPeriodsToken]) ? desiredCompoundingPeriodsToken : values[desiredCompoundingPeriodsToken],
   );
