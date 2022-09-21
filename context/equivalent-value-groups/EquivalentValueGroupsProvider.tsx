@@ -32,7 +32,7 @@ export const EquivalentValueGroupsProvider: FC<Props> = ({ children }) => {
     try {
       const newGroup: INewPaymentGroup = {
         name,
-        interest: 5.0,
+        interest: 0.05,
         payments: [],
       };
       const response = await httpClient.post<IPaymentGroup>(
