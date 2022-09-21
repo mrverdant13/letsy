@@ -22,6 +22,7 @@ import { Payment } from '../../../components/ui/Payment';
 import { PaymentGroupNameValidationSchema } from '../../../validation-schemas/payment-group';
 import usePrevious from '../../../hooks/usePrevious';
 import { useEquivalenceContext } from '../../../context/equivalence/context';
+import { grey } from '@mui/material/colors';
 
 interface Props {
   group: IPaymentGroup;
@@ -230,22 +231,26 @@ const NoPaymentsMessage: FC = () => {
 const EquivalentValueChart: FC = () => {
   const [blockWidth, setBlockWidth] = useState<number>(50);
   const [blockHeight, setBlockHeight] = useState<number>(50);
+  const { equivalentPayment } = useEquivalenceContext();
   const { group } = useEquivalenceGroupContext();
-  const maxPosition = useMemo(
-    () => Math.max(...group.payments.map<number>(p => {
-      switch (p.type) {
-        case IPaymentType.single:
-          return p.position;
-        case IPaymentType.uniformSeries:
-          return p.position + p.periods;
-      }
-    })),
+  const chartPeriods = useMemo(
+    () => Math.max(
+      ...group.payments.map<number>(p => {
+        switch (p.type) {
+          case IPaymentType.single:
+            return p.position;
+          case IPaymentType.uniformSeries:
+            return p.position + p.periods;
+        }
+      }),
+      50,
+    ),
     [group.payments],
   );
 
   const periodsBar = (
     <PeriodsBar
-      positionsCount={maxPosition + 10}
+      positionsCount={chartPeriods}
       blockWidth={blockWidth}
     />
   );
@@ -269,7 +274,7 @@ const EquivalentValueChart: FC = () => {
       >
         {
           Array.from(
-            { length: maxPosition + 10 },
+            { length: chartPeriods },
             (x, i) => (
               <Box
                 key={i}
@@ -277,6 +282,7 @@ const EquivalentValueChart: FC = () => {
                   width: blockWidth,
                   borderLeft: '.2px solid white',
                   opacity: .25,
+                  backgroundColor: equivalentPayment?.position === i ? grey[700] : undefined,
                 }}
               >
               </Box>
