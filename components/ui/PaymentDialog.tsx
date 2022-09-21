@@ -28,63 +28,64 @@ export const PaymentDialog: FC<Props> = (props) => {
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { group, addPayment, updatePayment } = useEquivalenceGroupContext();
   return (
-    <Formik
-      initialValues={{
-        // Base
-        name: payment?.name ?? '',
-        type: payment?.type ?? '',
-        position: payment?.position ?? 0,
+    <Dialog
+      open={isOpen}
+      onClose={close}
+      fullScreen={fullScreen}
+      aria-labelledby={titleId}
+    >
+      <Formik
+        key={JSON.stringify(payment)}
+        initialValues={{
+          // Base
+          name: payment?.name ?? '',
+          type: payment?.type ?? '',
+          position: payment?.position ?? 0,
 
-        // Simple payment
-        amount: (payment?.type === IPaymentType.single) ? payment?.amount : 0,
+          // Simple payment
+          amount: (payment?.type === IPaymentType.single) ? payment?.amount : 0,
 
-        // Uniform series payment
-        periodicAmount: (payment?.type === IPaymentType.uniformSeries) ? payment?.periodicAmount : 0,
-        periods: (payment?.type === IPaymentType.uniformSeries) ? payment?.periods : 0,
-      }}
-      validate={
-        (values) => {
-          const errors: { [key: string]: (string | undefined) } = {};
-          const paymentValidationResult = PaymentValidationSchema.safeParse(values);
-          if (!paymentValidationResult.success) {
-            const issues = paymentValidationResult.error.issues;
-            issues.forEach((issue) => {
-              const field = issue.path.length > 0 ? issue.path[0] : undefined;
-              if (field) {
-                errors[field] = field === 'type' ? 'Invalid value' : issue.message;
+          // Uniform series payment
+          periodicAmount: (payment?.type === IPaymentType.uniformSeries) ? payment?.periodicAmount : 0,
+          periods: (payment?.type === IPaymentType.uniformSeries) ? payment?.periods : 0,
+        }}
+        validate={
+          (values) => {
+            const errors: { [key: string]: (string | undefined) } = {};
+            const paymentValidationResult = PaymentValidationSchema.safeParse(values);
+            if (!paymentValidationResult.success) {
+              const issues = paymentValidationResult.error.issues;
+              issues.forEach((issue) => {
+                const field = issue.path.length > 0 ? issue.path[0] : undefined;
+                if (field) {
+                  errors[field] = field === 'type' ? 'Invalid value' : issue.message;
+                }
+              });
+            } else if (payment?.name !== values.name) {
+              const payments = [...group.payments, values];
+              const paymentsValidationResult = SpecificPaymentGroupPaymentsValidationSchema.safeParse(payments);
+              if (!paymentsValidationResult.success) {
+                errors.name = paymentsValidationResult.error.issues[0].message;
               }
-            });
-          } else {
-            const payments = [...group.payments, values];
-            const paymentsValidationResult = SpecificPaymentGroupPaymentsValidationSchema.safeParse(payments);
-            if (!paymentsValidationResult.success) {
-              errors.name = paymentsValidationResult.error.issues[0].message;
+            }
+            return errors;
+          }
+        }
+        onSubmit={
+          (values) => {
+            const resultingPayment = PaymentValidationSchema.parse(values);
+            if (isEditing) {
+              updatePayment(payment!.name, resultingPayment);
+            } else {
+              addPayment(resultingPayment);
             }
           }
-          return errors;
         }
-      }
-      onSubmit={
-        (values) => {
-          const resultingPayment = PaymentValidationSchema.parse(values);
-          if (isEditing) {
-            updatePayment(payment!.name, resultingPayment);
-          } else {
-            addPayment(resultingPayment);
-          }
-        }
-      }
-    >
-      {({ values: { type: typeString }, submitForm, isSubmitting }) => {
-        const type = IPaymentType.parse(typeString ?? '');
-        return (
-          <Form>
-            <Dialog
-              open={isOpen}
-              onClose={close}
-              fullScreen={fullScreen}
-              aria-labelledby={titleId}
-            >
+      >
+        {({ values: { type: typeString }, submitForm, isSubmitting }) => {
+          const type = IPaymentType.parse(typeString ?? '');
+          return (
+            <Form>
               <Box
                 sx={{
                   minWidth: 400,
@@ -130,11 +131,11 @@ export const PaymentDialog: FC<Props> = (props) => {
                   <SubmitButton {...props} />
                 </DialogActions>
               </Box>
-            </Dialog>
-          </Form>
-        );
-      }}
-    </Formik>
+            </Form>
+          );
+        }}
+      </Formik>
+    </Dialog>
   )
 }
 
