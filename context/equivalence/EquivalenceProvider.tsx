@@ -20,12 +20,6 @@ export const EquivalenceProvider: FC<Props> = ({ children }) => {
     },
   );
 
-  const reset = async () => {
-    dispatch({
-      type: '[Equivalence] Reset',
-    });
-  }
-
   const computeEquivalence = async (
     group: IPaymentGroup,
     targetPeriod: number,
@@ -59,7 +53,6 @@ export const EquivalenceProvider: FC<Props> = ({ children }) => {
     <EquivalenceContext.Provider
       value={{
         ...state,
-        reset,
         computeEquivalence,
       }}
     >

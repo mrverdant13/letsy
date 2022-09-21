@@ -5,13 +5,6 @@ import { EquivalenceAction } from './actions';
 
 export const reducer: Reducer<EquivalenceState, EquivalenceAction> = (state, action) => {
   switch (action.type) {
-    case '[Equivalence] Reset': {
-      return {
-        loading: false,
-        equivalentPayment: undefined,
-        error: undefined,
-      }
-    }
     case '[Equivalence] Loading': {
       return {
         loading: true,
