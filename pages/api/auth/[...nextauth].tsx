@@ -15,10 +15,10 @@ export const authOptions: NextAuthOptions = {
       clientId: github.clientId,
       clientSecret: github.clientSecret,
     }),
-    GoogleProvider({
-      clientId: google.clientId,
-      clientSecret: google.clientSecret,
-    }),
+    // GoogleProvider({
+    //   clientId: google.clientId,
+    //   clientSecret: google.clientSecret,
+    // }),
   ],
   callbacks: {
     async session({ session, token, user }) {
