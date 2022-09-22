@@ -1,6 +1,6 @@
 import { prop, modelOptions } from '@typegoose/typegoose';
 
-import { IPaymentType } from '../../interfaces/payment-type';
+import { IPaymentType, IPaymentTypeUtils } from '../../interfaces/payment-type';
 
 @modelOptions({
   schemaOptions: {
@@ -25,7 +25,7 @@ export class Payment {
   @prop({
     required: true,
     type: String,
-    enum: IPaymentType.VALUES,
+    enum: IPaymentTypeUtils.VALUES,
   })
   readonly type!: typeof IPaymentType;
 }

@@ -5,7 +5,7 @@ import { Field, Form, Formik, useFormikContext } from 'formik';
 import { TextField } from 'formik-mui';
 
 import { PaymentTypeDropdown } from './PaymentTypeDropdown';
-import { IPaymentType } from '../../interfaces/payment-type';
+import { IPaymentType, IPaymentTypeUtils } from '../../interfaces/payment-type';
 import { PaymentAttributes } from './PaymentAttributes';
 import { PaymentValidationSchema } from '../../validation-schemas/payment';
 import { SpecificPaymentGroupPaymentsValidationSchema } from '../../validation-schemas/payment-group';
@@ -83,7 +83,7 @@ export const PaymentDialog: FC<Props> = (props) => {
         }
       >
         {({ values: { type: typeString }, submitForm, isSubmitting }) => {
-          const type = IPaymentType.parse(typeString ?? '');
+          const type = IPaymentTypeUtils.parse(typeString ?? '');
           return (
             <Form>
               <Box
