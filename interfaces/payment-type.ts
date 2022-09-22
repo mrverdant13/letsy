@@ -3,7 +3,7 @@ export enum IPaymentType {
   uniformSeries = 'uniform-series',
 }
 
-export namespace IPaymentType {
+export namespace IPaymentTypeUtils {
   export const VALUES: (IPaymentType[]) = Object.values(IPaymentType) as IPaymentType[];
 
   export function parse(s: string): (IPaymentType | null) {

@@ -3,7 +3,7 @@ import { FC, useMemo } from 'react';
 import { FormControl, FormHelperText, InputLabel, MenuItem, Select } from '@mui/material';
 import { useField, useFormikContext } from 'formik';
 
-import { IPaymentType } from '../../interfaces/payment-type';
+import { IPaymentTypeUtils } from '../../interfaces/payment-type';
 
 const labelId: string = 'payment-type-dropdown-label';
 
@@ -42,13 +42,13 @@ export const PaymentTypeDropdown: FC<PaymentTypeDropdownProps> = (props) => {
         label={label}
       >
         {
-          IPaymentType.VALUES.map(
+          IPaymentTypeUtils.VALUES.map(
             (type) => (
               <MenuItem
                 key={type}
                 value={type}
               >
-                {IPaymentType.getLabel(type)}
+                {IPaymentTypeUtils.getLabel(type)}
               </MenuItem>
             ),
           )
