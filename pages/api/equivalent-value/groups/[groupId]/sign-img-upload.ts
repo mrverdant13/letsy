@@ -59,7 +59,7 @@ const signPaymentImageUpload = async (req: NextApiRequest, res: NextApiResponse<
     signature,
     timestamp,
     cloudName: cloudinaryConf.cloudName,
-    apiKey: cloudinaryConf.cloudName,
+    apiKey: cloudinaryConf.apiKey,
     folder,
   })
 }
