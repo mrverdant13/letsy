@@ -1,10 +1,10 @@
 import { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType, NextPage } from 'next';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import Image from 'next/image';
 
 import { signOut } from 'next-auth/react';
 import { unstable_getServerSession } from 'next-auth';
-import { Avatar, Button, Typography } from '@mui/material';
+import { Avatar, Box, Button, Skeleton, Tooltip, Typography } from '@mui/material';
 
 import { authOptions } from '../api/auth/[...nextauth]';
 import { BasePageLayout } from '../../components/layouts/BasePageLayout';
@@ -24,6 +24,7 @@ const ProfilePage: NextPage<PageProps> = ({ user }) => {
 export default ProfilePage;
 
 export const ProfilePageContent: FC<PageProps> = ({ user }) => {
+  const [passwordIsVisible, setPasswordIsVisible] = useState<boolean>(false);
   const avatarSide = {
     xs: 100,
     sm: 200,
@@ -77,18 +78,38 @@ export const ProfilePageContent: FC<PageProps> = ({ user }) => {
       >
         {user.name}
       </Typography>
-      <Typography
-        textAlign="center"
+      <Tooltip
+        title={
+          passwordIsVisible
+            ? 'Hide email'
+            : 'Show email'
+        }
         sx={{
-          pb: 2,
-          typography: {
-            xs: 'body2',
-            sm: 'h6',
-          },
+          mb: 2,
         }}
       >
-        {user.email}
-      </Typography>
+        <Box
+          onClick={() => setPasswordIsVisible((v) => !v)}
+        >
+          <Typography
+            textAlign="center"
+            sx={{
+              typography: {
+                xs: 'body2',
+                sm: 'h6',
+              },
+            }}
+          >
+            {
+              passwordIsVisible
+                ?
+                user.email
+                :
+                <Skeleton animation={false} width={200} />
+            }
+          </Typography>
+        </Box>
+      </Tooltip>
       <Button
         onClick={() => signOut()}
         sx={{
