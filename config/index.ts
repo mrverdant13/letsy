@@ -1,6 +1,7 @@
 interface Config {
   db: DbConfig;
   oauth: OauthConfig;
+  cloudinary: CloudinaryConfig;
 }
 
 interface DbConfig {
@@ -22,6 +23,12 @@ interface GoogleOauthAppConfig {
   clientSecret: string;
 }
 
+interface CloudinaryConfig {
+  apiSecret: string;
+  apiKey: string;
+  cloudName: string;
+}
+
 const env = process.env;
 
 const connectionString = env.DB_CONNECTION_STRING;
@@ -39,6 +46,15 @@ if (!googleOauthAppClientId) throw new Error('GOOGLE_OAUTH_APP_CLIENT_ID environ
 const googleOauthAppClientSecret = env.GOOGLE_OAUTH_APP_CLIENT_SECRET;
 if (!googleOauthAppClientSecret) throw new Error('GOOGLE_OAUTH_APP_CLIENT_SECRET environment variable is not set');
 
+const cloudinaryApiSecret = env.CLOUDINARY_API_SECRET;
+if (!cloudinaryApiSecret) throw new Error('CLOUDINARY_API_SECRET environment variable is not set');
+
+const cloudinaryApiKey = env.CLOUDINARY_API_KEY;
+if (!cloudinaryApiKey) throw new Error('CLOUDINARY_API_KEY environment variable is not set');
+
+const cloudinaryCloudName = env.CLOUDINARY_CLOUD_NAME;
+if (!cloudinaryCloudName) throw new Error('CLOUDINARY_CLOUD_NAME environment variable is not set');
+
 const config: Config = {
   db: {
     connectionString,
@@ -52,7 +68,12 @@ const config: Config = {
       clientId: googleOauthAppClientId,
       clientSecret: googleOauthAppClientSecret,
     }
-  }
+  },
+  cloudinary: {
+    apiSecret: cloudinaryApiSecret,
+    apiKey: cloudinaryApiKey,
+    cloudName: cloudinaryCloudName,
+  },
 };
 
 export default config;
