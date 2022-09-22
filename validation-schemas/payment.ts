@@ -4,6 +4,19 @@ import { IPaymentType } from '../interfaces/payment-type';
 import { PaymentTypeValidationSchema } from './payment-type';
 import { PositionValidationSchema } from './positions';
 
+const PaymentImageValidationSchema = z
+  .string({
+    required_error: 'Image URL is required',
+    invalid_type_error: 'Invalid image URL'
+  })
+  .url(
+    'Invalid image URL',
+  );
+
+export const PaymentImagesValidationSchema = z
+  .array(PaymentImageValidationSchema)
+  .default([]);
+
 const BasePaymentValidationSchema = z.object({
   name: z
     .string({
@@ -19,6 +32,7 @@ const BasePaymentValidationSchema = z.object({
     ),
   position: PositionValidationSchema('Position'),
   type: PaymentTypeValidationSchema,
+  images: PaymentImagesValidationSchema,
 });
 
 export const SinglePaymentValidationSchema = BasePaymentValidationSchema.merge(
