@@ -79,30 +79,33 @@ export const EquivalenceGroupProvider: FC<Props> = ({ children, initialGroup }) 
     [state.group._id, state.loading],
   );
 
-  const updatePayment = async (name: string, payment: IPayment) => {
-    if (state.loading) return;
-    dispatch({
-      type: '[EquivalenceGroup] Loading',
-    });
-    const group = state.group;
-    const groupId = group._id;
-    const payments = group.payments;
-    const response = await httpClient.patch<IPaymentGroup>(
-      `/equivalent-value/groups/${groupId}`,
-      {
-        payments: payments.map(
-          p =>
-            p.name == name
-              ? payment
-              : p,
-        ),
-      },
-    );
-    dispatch({
-      type: '[EquivalenceGroup] Loaded',
-      group: response.data,
-    });
-  }
+  const updatePayment = useCallback(
+    async (name: string, payment: IPayment) => {
+      if (state.loading) return;
+      dispatch({
+        type: '[EquivalenceGroup] Loading',
+      });
+      const group = state.group;
+      const groupId = group._id;
+      const payments = group.payments;
+      const response = await httpClient.patch<IPaymentGroup>(
+        `/equivalent-value/groups/${groupId}`,
+        {
+          payments: payments.map(
+            p =>
+              p.name == name
+                ? payment
+                : p,
+          ),
+        },
+      );
+      dispatch({
+        type: '[EquivalenceGroup] Loaded',
+        group: response.data,
+      });
+    },
+    [state.group, state.loading],
+  );
 
   const deletePayment = async (name: string) => {
     if (state.loading) return;
