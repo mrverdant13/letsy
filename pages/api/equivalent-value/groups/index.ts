@@ -28,7 +28,7 @@ type Data =
   | GetEquivalentValueGroups
   ;
 
-export default function (req: NextApiRequest, res: NextApiResponse<Data>) {
+export default function endpoint(req: NextApiRequest, res: NextApiResponse<Data>) {
   switch (req.method) {
     case 'POST':
       return createGroup(req, res);

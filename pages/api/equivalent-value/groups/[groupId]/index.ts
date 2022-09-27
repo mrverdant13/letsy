@@ -31,7 +31,7 @@ type Data =
   | UpdateEquivalenceGroup
   ;
 
-export default function (req: NextApiRequest, res: NextApiResponse<Data>) {
+export default function endpoint(req: NextApiRequest, res: NextApiResponse<Data>) {
   switch (req.method) {
     case 'PATCH': {
       return updateGroup(req, res);
