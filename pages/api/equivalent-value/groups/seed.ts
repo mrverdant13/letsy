@@ -18,7 +18,7 @@ type Data =
   | SeedGroups
   ;
 
-export default function (req: NextApiRequest, res: NextApiResponse<Data>) {
+export default function endpoint(req: NextApiRequest, res: NextApiResponse<Data>) {
   switch (req.method) {
     case 'POST':
       if (process.env.NODE_ENV === 'production') {

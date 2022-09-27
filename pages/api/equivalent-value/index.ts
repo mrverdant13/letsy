@@ -9,7 +9,7 @@ type Data =
   | { message: string }
 
 
-export default function (req: NextApiRequest, res: NextApiResponse<Data>) {
+export default function endpoint(req: NextApiRequest, res: NextApiResponse<Data>) {
   if (req.method !== 'POST') return res.status(405).json({ message: 'Method not allowed' });
   const result = PostReqBodyValidationSchema.safeParse(req.body);
   if (!result.success) return res.status(400).json({ message: 'Invalid data' });

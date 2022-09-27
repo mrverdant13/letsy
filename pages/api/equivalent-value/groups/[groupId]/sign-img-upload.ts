@@ -27,7 +27,7 @@ type Data =
   | SignPaymentImageUploadData
   ;
 
-export default function (req: NextApiRequest, res: NextApiResponse<Data>) {
+export default function endpoint(req: NextApiRequest, res: NextApiResponse<Data>) {
   switch (req.method) {
     case 'POST': {
       return signPaymentImageUpload(req, res);
