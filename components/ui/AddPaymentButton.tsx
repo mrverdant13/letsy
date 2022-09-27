@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import { Add } from "@mui/icons-material"
 import { Fab, Tooltip } from "@mui/material"
@@ -10,9 +10,10 @@ export const AddPaymentButton = () => {
   const open = () => {
     setDialogIsOpen(true);
   };
-  const close = () => {
-    setDialogIsOpen(false);
-  };
+  const close = useCallback(
+    () => setDialogIsOpen(false),
+    [],
+  );
 
   return (
     <>
