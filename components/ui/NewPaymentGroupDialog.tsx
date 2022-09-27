@@ -102,7 +102,7 @@ const SubmitButton = () => {
     () => {
       setSubmitting(creating);
     },
-    [creating],
+    [creating, setSubmitting],
   );
   useEffect(
     () => {
@@ -112,7 +112,7 @@ const SubmitButton = () => {
         router.push(`equivalent-value/${groupId}`);
       }
     },
-    [groupId],
+    [groupId, reset, resetForm, router],
   );
   const submit = () => {
     if (isSubmitting) return;
