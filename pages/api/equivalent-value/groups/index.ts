@@ -43,7 +43,6 @@ const createGroup = async (req: NextApiRequest, res: NextApiResponse<CreateEquiv
   if (!session) return res.status(401).send({ message: 'Unauthorized' });
   const result = NewPaymentGroupValidationSchema.safeParse({ ...req.body, owner: session.userId });
   if (!result.success) {
-    console.log(result.error.issues);
     return res.status(400).json({
       code: 'invalid-data',
       issues: result.error.issues,

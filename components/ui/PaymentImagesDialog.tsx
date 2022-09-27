@@ -74,7 +74,6 @@ export const PaymentImagesDialog: FC<Props> = (props) => {
           options,
           processResults,
         );
-        console.log('widget', widget);
         setUploadWidget(widget);
       } catch (e) {
         console.error(e);

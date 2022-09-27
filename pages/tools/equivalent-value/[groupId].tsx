@@ -36,8 +36,6 @@ const EquivalentValuePage: NextPage<Props> = ({ group: initialGroup }) => {
         src="https://upload-widget.cloudinary.com/global/all.js"
         type="text/javascript"
         strategy="lazyOnload"
-        onLoad={() => console.log('Ready!')} // TODO: Remove log.
-        onError={(e) => console.error(e)} // TODO: Remove log.
       />
       <EquivalenceGroupProvider
         initialGroup={initialGroup}
