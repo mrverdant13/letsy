@@ -83,7 +83,7 @@ export const UniformSeriesPayment: FC<Props> = ({ blockWidth, blockHeight, payme
     e: DraggableEvent,
     data: DraggableData,
   ) => {
-    const updatedPosition = Math.round((currentOffset + data.x) / blockWidth);
+    const updatedPosition = Math.max(0, Math.round((currentOffset + data.x) / blockWidth));
     setDynamicPosition(updatedPosition);
   }
 
