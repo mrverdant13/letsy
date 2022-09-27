@@ -95,7 +95,7 @@ const EquivalentValuePageContent: FC = () => {
       if (!wasLoading) return;
       computeEquivalence(group, equivalentPayment.position);
     },
-    [loading, wasLoading, equivalentPayment, group],
+    [loading, wasLoading, equivalentPayment, group, computeEquivalence],
   );
   return (
     <BasePageLayout
