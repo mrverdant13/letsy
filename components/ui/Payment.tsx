@@ -1,4 +1,4 @@
-import { FC, MouseEvent, useEffect, useState } from 'react';
+import { FC, MouseEvent, useCallback, useEffect, useState } from 'react';
 
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, ListItemIcon, Menu, MenuItem } from '@mui/material';
 import { Delete, Edit, PhotoLibrary } from '@mui/icons-material';
@@ -48,20 +48,26 @@ export const Payment: FC<Props> = ({ payment, blockWidth, blockHeight }) => {
     closeContextMenu();
   }
 
-  const closeRemoveDialog = () => {
-    setRemoveDialogIsOpen(false);
-    closeContextMenu();
-  }
+  const closeRemoveDialog = useCallback(
+    () => {
+      setRemoveDialogIsOpen(false);
+      closeContextMenu();
+    },
+    [],
+  );
 
   const openEditDialog = () => {
     setEditDialogIsOpen(true);
     closeContextMenu();
   }
 
-  const closeEditDialog = () => {
-    setEditDialogIsOpen(false);
-    closeContextMenu();
-  }
+  const closeEditDialog = useCallback(
+    () => {
+      setEditDialogIsOpen(false);
+      closeContextMenu();
+    },
+    [],
+  );
 
   const openImagesDialog = () => {
     setImagesDialogIsOpen(true);
@@ -84,7 +90,7 @@ export const Payment: FC<Props> = ({ payment, blockWidth, blockHeight }) => {
       closeRemoveDialog();
       closeEditDialog();
     },
-    [JSON.stringify(payment)]
+    [payment, closeRemoveDialog, closeEditDialog],
   );
 
   return (

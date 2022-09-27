@@ -1,4 +1,4 @@
-import { ReactNode, FC, useReducer, Reducer } from 'react';
+import { ReactNode, FC, useReducer, Reducer, useCallback } from 'react';
 
 import { EquivalenceState } from './state';
 import { EquivalenceAction } from './actions';
@@ -20,33 +20,36 @@ export const EquivalenceProvider: FC<Props> = ({ children }) => {
     },
   );
 
-  const computeEquivalence = async (
-    group: IPaymentGroup,
-    targetPeriod: number,
-  ): Promise<void> => {
-    dispatch({
-      type: "[Equivalence] Loading",
-    });
-    try {
-      const response = await httpClient.post<ISinglePayment>(
-        '/equivalent-value',
-        {
-          group,
-          targetPosition: targetPeriod,
-        },
-      );
-      const equivalentPayment: ISinglePayment = response.data;
+  const computeEquivalence = useCallback(
+    async (
+      group: IPaymentGroup,
+      targetPeriod: number,
+    ): Promise<void> => {
       dispatch({
-        type: "[Equivalence] Loaded",
-        equivalentPayment,
+        type: "[Equivalence] Loading",
       });
-    } catch (e) {
-      dispatch({
-        type: "[Equivalence] Add Error",
-        error: { code: 'unexpected' },
-      });
-    }
-  }
+      try {
+        const response = await httpClient.post<ISinglePayment>(
+          '/equivalent-value',
+          {
+            group,
+            targetPosition: targetPeriod,
+          },
+        );
+        const equivalentPayment: ISinglePayment = response.data;
+        dispatch({
+          type: "[Equivalence] Loaded",
+          equivalentPayment,
+        });
+      } catch (e) {
+        dispatch({
+          type: "[Equivalence] Add Error",
+          error: { code: 'unexpected' },
+        });
+      }
+    },
+    [],
+  );
 
 
   return (

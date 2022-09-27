@@ -71,7 +71,7 @@ const InterestFieldContent: FC = () => {
       const actualInterest = sanitizeRelativeInterest(debouncedInterest / 100);
       updateInterest(actualInterest);
     },
-    [loading, debouncedInterest, hasBeenApplied, canApplyChange],
+    [loading, debouncedInterest, hasBeenApplied, canApplyChange, updateInterest],
   );
 
   const onKeyDown = (event: KeyboardEvent) => {

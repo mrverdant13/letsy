@@ -1,6 +1,7 @@
 import { FC, useEffect, useState } from "react";
+import Image from "next/image";
 
-import { Dialog, DialogContent, DialogTitle, Divider, IconButton, ImageList, ImageListItem, Stack, Tooltip, Typography } from "@mui/material";
+import { Box, Dialog, DialogContent, DialogTitle, Divider, IconButton, ImageList, ImageListItem, Stack, Tooltip, Typography } from "@mui/material";
 
 import { IPayment } from "../../interfaces/payment";
 import { AddPhotoAlternate } from "@mui/icons-material";
@@ -43,7 +44,7 @@ export const PaymentImagesDialog: FC<Props> = (props) => {
       };
       updatePayment(payment.name, resultingPayment);
     },
-    [payment, uploadedImgUrl],
+    [payment, uploadedImgUrl, updatePayment],
   );
 
   useEffect(() => {
@@ -74,7 +75,6 @@ export const PaymentImagesDialog: FC<Props> = (props) => {
           options,
           processResults,
         );
-        console.log('widget', widget);
         setUploadWidget(widget);
       } catch (e) {
         console.error(e);
@@ -84,7 +84,7 @@ export const PaymentImagesDialog: FC<Props> = (props) => {
     }
     if (uploadWidget == undefined) bootstrapUploadWidget();
   },
-    [isOpen, isBootstrappingUploadWidget, uploadWidget],
+    [isOpen, isBootstrappingUploadWidget, uploadWidget, group._id],
   );
 
   const openWidget = () => {
@@ -123,11 +123,15 @@ export const PaymentImagesDialog: FC<Props> = (props) => {
             <ImageList variant="masonry" cols={3} gap={8}>
               {payment.images.map((img) => (
                 <ImageListItem key={img}>
-                  <img
+                  <Image
+                    key={img}
+                    layout="intrinsic"
+                    width="100%"
+                    height="100%"
+                    objectFit="cover"
                     src={img}
-                    srcSet={img}
                     alt={payment.name}
-                    loading="lazy"
+                    title={payment.name}
                   />
                 </ImageListItem>
               ))}

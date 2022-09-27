@@ -149,7 +149,7 @@ const SubmitButton: FC<Props> = ({ close, payment }) => {
     () => {
       setSubmitting(isLoading);
     },
-    [isLoading],
+    [isLoading, setSubmitting],
   );
   useEffect(
     () => {
@@ -159,7 +159,7 @@ const SubmitButton: FC<Props> = ({ close, payment }) => {
       resetForm();
       close();
     },
-    [wasLoading, isLoading, hasErrors],
+    [wasLoading, isLoading, hasErrors, resetForm, close],
   );
   const submit = () => {
     if (isSubmitting) return;

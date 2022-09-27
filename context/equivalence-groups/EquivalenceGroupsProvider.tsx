@@ -1,4 +1,4 @@
-import { ReactNode, FC, useReducer, Reducer } from 'react';
+import { ReactNode, FC, useReducer, Reducer, useCallback } from 'react';
 
 import { EquivalenceGroupsState, INITIAL_STATE } from './state';
 import { EquivalenceGroupsAction } from './actions';
@@ -19,26 +19,29 @@ export const EquivalenceGroupsProvider: FC<Props> = ({ children }) => {
     INITIAL_STATE,
   );
 
-  const getGroups = async (paginationParams: PaginationParams) => {
-    dispatch({
-      type: '[EquivalenceGroups] Loading',
-    });
-    try {
-      const queryString = buildQueryString(paginationParams);
-      const response = await httpClient.get<IPaymentGroupsPage>(
-        `/equivalent-value/groups?${queryString}`,
-      );
+  const getGroups = useCallback(
+    async (paginationParams: PaginationParams) => {
       dispatch({
-        type: '[EquivalenceGroups] Loaded',
-        groupsPage: response.data,
+        type: '[EquivalenceGroups] Loading',
       });
-    } catch (e) {
-      dispatch({
-        type: '[EquivalenceGroups] Failed Load',
-        error: { code: 'unexpected' },
-      });
-    }
-  };
+      try {
+        const queryString = buildQueryString(paginationParams);
+        const response = await httpClient.get<IPaymentGroupsPage>(
+          `/equivalent-value/groups?${queryString}`,
+        );
+        dispatch({
+          type: '[EquivalenceGroups] Loaded',
+          groupsPage: response.data,
+        });
+      } catch (e) {
+        dispatch({
+          type: '[EquivalenceGroups] Failed Load',
+          error: { code: 'unexpected' },
+        });
+      }
+    },
+    [],
+  );
 
   const deleteGroup = async (groupId: string) => {
     const groupsPage = state.groupsPage;

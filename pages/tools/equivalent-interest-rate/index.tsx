@@ -340,22 +340,13 @@ const ValueField: FC<ValueFieldProps> = ({ token, name, description, InputProps 
 const Result: FC = () => {
   const { isValid, values, dirty, errors } = useFormikContext<EquivalentInterestRateData>();
   const equationRef = useRef<any>();
-  const [desiredInterest, setDesiredInterest] = useState<number>(0);
   const evaluatedEquation = buildEquation(
     (!dirty || errors[knownInterestToken]) ? knownInterestToken : (values[knownInterestToken] / 100).toFixed(digits),
     (!dirty || errors[knownCompoundingPeriodsToken]) ? knownCompoundingPeriodsToken : values[knownCompoundingPeriodsToken],
     (!dirty || errors[desiredCompoundingPeriodsToken]) ? desiredCompoundingPeriodsToken : values[desiredCompoundingPeriodsToken],
   );
   const evaluatedComparison = `${evaluatedEquation} = ${desiredInterestToken}`
-  useEffect(
-    () => {
-      setDesiredInterest(
-        equationRef.current == null
-          ? 0
-          : equationRef.current.result.value,
-      );
-    },
-  );
+  const desiredInterest = equationRef.current?.result.value ?? 0;
   if (dirty && isValid) {
     return (
       <Stack

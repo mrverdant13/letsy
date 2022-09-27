@@ -51,7 +51,7 @@ const EquivalentValueGroupsPageContent = () => {
     () => {
       getGroups({ offset, limit });
     },
-    [offset, limit],
+    [offset, limit, getGroups],
   );
 
   const skeleton = (

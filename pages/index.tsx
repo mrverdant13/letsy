@@ -26,6 +26,7 @@ const HomePage: NextPage = () => {
           src="/home-bg.jpg"
           layout="fill"
           objectFit="cover"
+          alt="Letsy App"
         />
       </Box>
       <Stack
