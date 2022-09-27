@@ -43,7 +43,7 @@ export const PaymentImagesDialog: FC<Props> = (props) => {
       };
       updatePayment(payment.name, resultingPayment);
     },
-    [payment, uploadedImgUrl],
+    [payment, uploadedImgUrl, updatePayment],
   );
 
   useEffect(() => {
@@ -84,7 +84,7 @@ export const PaymentImagesDialog: FC<Props> = (props) => {
     }
     if (uploadWidget == undefined) bootstrapUploadWidget();
   },
-    [isOpen, isBootstrappingUploadWidget, uploadWidget],
+    [isOpen, isBootstrappingUploadWidget, uploadWidget, group._id],
   );
 
   const openWidget = () => {
