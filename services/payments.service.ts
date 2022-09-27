@@ -39,6 +39,7 @@ export const calculateEquivalentValue = (
     position: targetPosition,
     type: IPaymentType.single,
     amount,
+    images: [],
   };
 }
 
@@ -61,6 +62,7 @@ const calculateEquivalentValueForSinglePayment = (
     position: targetPosition,
     type: IPaymentType.single,
     amount,
+    images: [],
   };
 };
 
@@ -92,6 +94,7 @@ const calculateEquivalentValueAtBeginningForUniformSeriesPayment = (
     position: payment.position,
     type: IPaymentType.single,
     amount,
+    images: [],
   };
 };
 

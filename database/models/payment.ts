@@ -1,6 +1,15 @@
 import { prop, modelOptions } from '@typegoose/typegoose';
 
 import { IPaymentType, IPaymentTypeUtils } from '../../interfaces/payment-type';
+import { PaymentImagesValidationSchema } from '../../validation-schemas/payment';
+
+const paymentImagesValidator = {
+  validator: (v: string[]) => {
+    const result = PaymentImagesValidationSchema.safeParse(v);
+    return result.success;
+  },
+  message: 'The payment images are not valid URLs',
+};
 
 @modelOptions({
   schemaOptions: {
@@ -28,6 +37,16 @@ export class Payment {
     enum: IPaymentTypeUtils.VALUES,
   })
   readonly type!: typeof IPaymentType;
+
+  @prop({
+    required: true,
+    type: () => [String],
+    default: [],
+    validate: [
+      paymentImagesValidator,
+    ],
+  })
+  images!: string[];
 }
 
 export class SinglePayment extends Payment {

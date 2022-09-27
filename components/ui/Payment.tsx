@@ -1,7 +1,7 @@
 import { FC, MouseEvent, useEffect, useState } from 'react';
 
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, ListItemIcon, Menu, MenuItem } from '@mui/material';
-import { Delete, Edit } from '@mui/icons-material';
+import { Delete, Edit, PhotoLibrary } from '@mui/icons-material';
 
 import { IPayment } from '../../interfaces/payment';
 import { IPaymentType } from '../../interfaces/payment-type';
@@ -9,6 +9,7 @@ import { SinglePayment } from './SinglePayment';
 import { UniformSeriesPayment } from './UniformSeriesPayment';
 import { useEquivalenceGroupContext } from '../../context/equivalence-group/context';
 import { PaymentDialog } from './PaymentDialog';
+import { PaymentImagesDialog } from './PaymentImagesDialog';
 
 interface Props {
   payment: IPayment;
@@ -22,8 +23,9 @@ interface ContextMenuCoordinates {
 }
 
 export const Payment: FC<Props> = ({ payment, blockWidth, blockHeight }) => {
-  const [removeDialogIsOpen, setRemoveDialogIsOpen] = useState<boolean>(false);
   const [editDialogIsOpen, setEditDialogIsOpen] = useState<boolean>(false);
+  const [imagesDialogIsOpen, setImagesDialogIsOpen] = useState<boolean>(false);
+  const [removeDialogIsOpen, setRemoveDialogIsOpen] = useState<boolean>(false);
   const { deletePayment } = useEquivalenceGroupContext();
   const [contextMenuCoordinates, setContextMenuCoordinates] = useState<ContextMenuCoordinates | undefined>(undefined);
   const contextMenuIsOpen = Boolean(contextMenuCoordinates);
@@ -58,6 +60,16 @@ export const Payment: FC<Props> = ({ payment, blockWidth, blockHeight }) => {
 
   const closeEditDialog = () => {
     setEditDialogIsOpen(false);
+    closeContextMenu();
+  }
+
+  const openImagesDialog = () => {
+    setImagesDialogIsOpen(true);
+    closeContextMenu();
+  }
+
+  const closeImagesDialog = () => {
+    setImagesDialogIsOpen(false);
     closeContextMenu();
   }
 
@@ -117,17 +129,23 @@ export const Payment: FC<Props> = ({ payment, blockWidth, blockHeight }) => {
             : undefined
         }
       >
-        <MenuItem onClick={openRemoveDialog}>
-          <ListItemIcon>
-            <Delete fontSize="small" />
-          </ListItemIcon>
-          Delete
-        </MenuItem>
         <MenuItem onClick={openEditDialog}>
           <ListItemIcon>
             <Edit fontSize="small" />
           </ListItemIcon>
           Edit
+        </MenuItem>
+        <MenuItem onClick={openImagesDialog}>
+          <ListItemIcon>
+            <PhotoLibrary fontSize="small" />
+          </ListItemIcon>
+          See images
+        </MenuItem>
+        <MenuItem onClick={openRemoveDialog}>
+          <ListItemIcon>
+            <Delete fontSize="small" />
+          </ListItemIcon>
+          Delete
         </MenuItem>
       </Menu>
       <Dialog
@@ -162,6 +180,11 @@ export const Payment: FC<Props> = ({ payment, blockWidth, blockHeight }) => {
       <PaymentDialog
         isOpen={editDialogIsOpen}
         close={closeEditDialog}
+        payment={payment}
+      />
+      <PaymentImagesDialog
+        isOpen={imagesDialogIsOpen}
+        close={closeImagesDialog}
         payment={payment}
       />
     </>

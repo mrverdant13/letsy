@@ -1,6 +1,8 @@
 import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import React, { FC, useState, useMemo, ChangeEvent, KeyboardEvent, useEffect } from 'react';
+import Script from 'next/script';
 
+import { grey } from '@mui/material/colors';
 import { Stack, Box, Typography, TextField } from '@mui/material';
 import { unstable_getServerSession } from 'next-auth';
 
@@ -22,7 +24,6 @@ import { Payment } from '../../../components/ui/Payment';
 import { PaymentGroupNameValidationSchema } from '../../../validation-schemas/payment-group';
 import usePrevious from '../../../hooks/usePrevious';
 import { useEquivalenceContext } from '../../../context/equivalence/context';
-import { grey } from '@mui/material/colors';
 
 interface Props {
   group: IPaymentGroup;
@@ -30,13 +31,22 @@ interface Props {
 
 const EquivalentValuePage: NextPage<Props> = ({ group: initialGroup }) => {
   return (
-    <EquivalenceGroupProvider
-      initialGroup={initialGroup}
-    >
-      <EquivalenceProvider>
-        <EquivalentValuePageContent />
-      </EquivalenceProvider>
-    </EquivalenceGroupProvider>
+    <>
+      <Script
+        src="https://upload-widget.cloudinary.com/global/all.js"
+        type="text/javascript"
+        strategy="lazyOnload"
+        onLoad={() => console.log('Ready!')} // TODO: Remove log.
+        onError={(e) => console.error(e)} // TODO: Remove log.
+      />
+      <EquivalenceGroupProvider
+        initialGroup={initialGroup}
+      >
+        <EquivalenceProvider>
+          <EquivalentValuePageContent />
+        </EquivalenceProvider>
+      </EquivalenceGroupProvider>
+    </>
   );
 }
 export default EquivalentValuePage;
