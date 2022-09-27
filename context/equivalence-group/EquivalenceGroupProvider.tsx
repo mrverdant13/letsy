@@ -1,4 +1,4 @@
-import { FC, ReactNode, useReducer, Reducer } from 'react';
+import { FC, ReactNode, useReducer, Reducer, useCallback } from 'react';
 
 import { EquivalenceGroupContext } from './context';
 import { IPaymentGroup } from '../../interfaces/payment-group';
@@ -60,21 +60,24 @@ export const EquivalenceGroupProvider: FC<Props> = ({ children, initialGroup }) 
     });
   }
 
-  const updateInterest = async (interest: number) => {
-    if (state.loading) return;
-    dispatch({
-      type: '[EquivalenceGroup] Loading',
-    });
-    const groupId = state.group._id;
-    const response = await httpClient.patch<IPaymentGroup>(
-      `/equivalent-value/groups/${groupId}`,
-      { interest },
-    );
-    dispatch({
-      type: '[EquivalenceGroup] Loaded',
-      group: response.data,
-    });
-  }
+  const updateInterest = useCallback(
+    async (interest: number) => {
+      if (state.loading) return;
+      dispatch({
+        type: '[EquivalenceGroup] Loading',
+      });
+      const groupId = state.group._id;
+      const response = await httpClient.patch<IPaymentGroup>(
+        `/equivalent-value/groups/${groupId}`,
+        { interest },
+      );
+      dispatch({
+        type: '[EquivalenceGroup] Loaded',
+        group: response.data,
+      });
+    },
+    [state.group._id, state.loading],
+  );
 
   const updatePayment = async (name: string, payment: IPayment) => {
     if (state.loading) return;
