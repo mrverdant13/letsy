@@ -23,7 +23,7 @@
     "mongodb": "^4.9.0",
     "mongoose": "^6.6.1",
     "next": "12.2.5",
-    "next-auth": "^4.10.3",
+    "next-auth": "^4.12.3",
     "re-resizable": "^6.9.9",
     "react": "18.2.0",
     "react-dom": "18.2.0",
